@@ -2290,6 +2290,88 @@ body {
   border-color: var(--mindset);
   box-shadow: 0 0 10px rgba(155,123,176,0.18);
 }
+
+/* ── SHARE BUTTON ──────────────────────────────────────────────────────────── */
+.btn-share {
+  border-color: rgba(91,141,184,0.45);
+  color: rgba(130,170,210,0.9);
+  background: rgba(91,141,184,0.06);
+}
+.btn-share:hover {
+  background: rgba(91,141,184,0.14);
+  color: var(--strategy);
+  border-color: var(--strategy);
+  box-shadow: 0 0 10px rgba(91,141,184,0.18);
+}
+
+/* Share fallback menu */
+.share-menu {
+  position: absolute;
+  z-index: 600;
+  background: var(--ink-mid);
+  border: 1px solid var(--rule-strong);
+  border-radius: 6px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.3);
+  padding: 6px 0;
+  min-width: 180px;
+  display: none;
+}
+.share-menu.open { display: block; }
+.share-menu-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  padding: 9px 16px;
+  color: var(--paper-dim);
+  cursor: pointer;
+  transition: background 0.13s, color 0.13s;
+  white-space: nowrap;
+}
+.share-menu-item:hover { background: var(--rule-strong); color: var(--paper); }
+
+/* Share wrapper — anchors the menu */
+.share-wrap { position: relative; }
+
+/* ── EMAIL MY PICKS ─────────────────────────────────────────────────────────── */
+.btn-my-picks {
+  border-color: rgba(155,123,176,0.5);
+  color: rgba(185,155,210,0.92);
+  background: rgba(155,123,176,0.07);
+  font-weight: 500;
+}
+.btn-my-picks:hover {
+  background: rgba(155,123,176,0.18);
+  color: var(--mindset);
+  border-color: var(--mindset);
+  box-shadow: 0 0 10px rgba(155,123,176,0.2);
+}
+
+.picks-email-input {
+  background: var(--ink-mid);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  padding: 7px 12px;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 200px;
+}
+.picks-email-input:focus { border-color: rgba(155,123,176,0.5); }
+.picks-email-input::placeholder { color: var(--paper-ghost); }
+
+/* Inline group for input+button pairs */
+.picks-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
 </style>
 </head>
 <body>
@@ -2327,6 +2409,17 @@ body {
   <button class="btn btn-merge" id="btn-import-merge">Import &amp; merge</button>
   <button class="btn btn-danger" id="btn-reset">Reset Session</button>
   <button class="btn btn-swipe" id="btn-open-swipe">📱 Swipe mode</button>
+  <div class="share-wrap">
+    <button class="btn btn-share" id="btn-share-main">🔗 Share</button>
+    <div class="share-menu" id="share-menu-main">
+      <button class="share-menu-item" id="share-wa-main">WhatsApp</button>
+      <button class="share-menu-item" id="share-copy-main">Copy link</button>
+    </div>
+  </div>
+  <div class="picks-group">
+    <input type="email" class="picks-email-input" id="picks-email-main" placeholder="Your email — get your picks" autocomplete="email">
+    <button class="btn btn-my-picks" id="btn-picks-main">📧 Email me my picks</button>
+  </div>
 </div>
 
 <!-- HOW TO VOTE STRIP -->
@@ -2549,11 +2642,18 @@ body {
 <!-- SWIPE DECK OVERLAY -->
 <div id="swipe-deck-overlay" class="hidden" role="region" aria-label="Swipe deck">
 
-  <!-- Top bar: close / progress / undo -->
+  <!-- Top bar: close / progress / undo / share -->
   <div class="swipe-top-bar">
     <button class="btn-swipe-close" id="swipe-close-btn">✕ Browse list</button>
     <div class="swipe-progress" id="swipe-progress">— / —</div>
     <button class="swipe-undo-btn" id="swipe-undo-btn" disabled>↩ Undo</button>
+    <div class="share-wrap" style="position:relative;">
+      <button class="btn btn-share" id="btn-share-swipe" style="font-size:0.6rem;padding:5px 10px;">🔗 Share</button>
+      <div class="share-menu" id="share-menu-swipe" style="right:0;top:calc(100% + 6px);">
+        <button class="share-menu-item" id="share-wa-swipe">WhatsApp</button>
+        <button class="share-menu-item" id="share-copy-swipe">Copy link</button>
+      </div>
+    </div>
   </div>
 
   <!-- Optional name mirror -->
@@ -2626,6 +2726,17 @@ body {
         <button class="swipe-end-btn primary" id="swipe-end-results">📊 View live results</button>
         <button class="swipe-end-btn" id="swipe-end-restart">↺ Restart deck</button>
         <button class="swipe-end-btn" id="swipe-end-browse">Browse full list</button>
+        <div class="share-wrap" style="position:relative;">
+          <button class="swipe-end-btn" id="btn-share-end">🔗 Share with classmates</button>
+          <div class="share-menu" id="share-menu-end" style="bottom:calc(100% + 6px);top:auto;left:50%;transform:translateX(-50%);">
+            <button class="share-menu-item" id="share-wa-end">WhatsApp</button>
+            <button class="share-menu-item" id="share-copy-end">Copy link</button>
+          </div>
+        </div>
+      </div>
+      <div class="picks-group" style="margin-top:4px;">
+        <input type="email" class="picks-email-input" id="picks-email-end" placeholder="Your email — get your picks" autocomplete="email" style="width:220px;">
+        <button class="swipe-end-btn" id="btn-picks-end">📧 Email me my picks</button>
       </div>
     </div>
   </div>
@@ -3912,6 +4023,120 @@ flushPending();
   });
 
 })(); // end initSwipeDeck
+
+// ── SHARE LINK ────────────────────────────────────────────────────────────────
+const SHARE_TEXT = 'Vote on the founder topics you want Huayi to write next 👇';
+const SHARE_TITLE = 'HELIX Topic Survey';
+
+function openShareFallback(menuId) {
+  // Close all other open share menus first
+  document.querySelectorAll('.share-menu').forEach(m => {
+    if (m.id !== menuId) m.classList.remove('open');
+  });
+  const menu = document.getElementById(menuId);
+  if (menu) menu.classList.toggle('open');
+}
+
+// Close share menus when clicking outside
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.share-wrap')) {
+    document.querySelectorAll('.share-menu').forEach(m => m.classList.remove('open'));
+  }
+});
+
+async function doShare(fallbackMenuId) {
+  const url = location.href;
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: SHARE_TITLE, text: SHARE_TEXT, url });
+      return;
+    } catch (err) {
+      // user cancelled or API failed — fall through to menu
+      if (err.name === 'AbortError') return;
+    }
+  }
+  openShareFallback(fallbackMenuId);
+}
+
+function shareViaWhatsApp() {
+  const text = encodeURIComponent(SHARE_TEXT + ' ' + location.href);
+  window.open('https://wa.me/?text=' + text, '_blank', 'noopener');
+  document.querySelectorAll('.share-menu').forEach(m => m.classList.remove('open'));
+}
+
+function shareCopyLink() {
+  navigator.clipboard.writeText(location.href)
+    .then(() => showToast('Link copied'))
+    .catch(() => showToast('Copy failed — check browser permissions'));
+  document.querySelectorAll('.share-menu').forEach(m => m.classList.remove('open'));
+}
+
+// Wire up all three Share buttons
+document.getElementById('btn-share-main').addEventListener('click', (e) => {
+  e.stopPropagation();
+  doShare('share-menu-main');
+});
+document.getElementById('btn-share-swipe').addEventListener('click', (e) => {
+  e.stopPropagation();
+  doShare('share-menu-swipe');
+});
+document.getElementById('btn-share-end').addEventListener('click', (e) => {
+  e.stopPropagation();
+  doShare('share-menu-end');
+});
+
+// Wire up WhatsApp + Copy link items in all menus
+['main','swipe','end'].forEach(suffix => {
+  document.getElementById('share-wa-' + suffix).addEventListener('click', shareViaWhatsApp);
+  document.getElementById('share-copy-' + suffix).addEventListener('click', shareCopyLink);
+});
+
+// ── EMAIL ME MY PICKS ─────────────────────────────────────────────────────────
+function buildMyPicksBody() {
+  const voted = CARDS
+    .map(c => ({ ...c, v: votes[c.id] || 0 }))
+    .filter(c => c.v > 0)
+    .sort((a, b) => b.v - a.v);
+  if (!voted.length) return null;
+
+  let body = 'Here are the founder topics I want to read (from Huayi\'s HELIX survey):\n\n';
+  voted.forEach((c, i) => {
+    const trackName = TRACK_NAMES[c.category] || c.category;
+    body += (i + 1) + '. ' + c.title + ' — ' + trackName + ' — ' + (c.hook || '') + '\n';
+  });
+  body += '\nOpen the board: ' + location.href;
+  return body;
+}
+
+function doEmailMyPicks(emailInputId) {
+  const emailEl = document.getElementById(emailInputId);
+  const email = (emailEl ? emailEl.value : '').trim();
+
+  const picked = CARDS.some(c => (votes[c.id] || 0) > 0);
+  if (!picked) { showToast('Vote on a few topics first'); return; }
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showToast('Enter your email first');
+    if (emailEl) emailEl.focus();
+    return;
+  }
+
+  const body = buildMyPicksBody();
+  if (!body) { showToast('Vote on a few topics first'); return; }
+
+  const subject = encodeURIComponent('My HELIX topic picks');
+  const encodedBody = encodeURIComponent(body);
+  const a = document.createElement('a');
+  a.href = 'mailto:' + encodeURIComponent(email) + '?subject=' + subject + '&body=' + encodedBody;
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => document.body.removeChild(a), 500);
+  showToast('Opening your email app…');
+}
+
+document.getElementById('btn-picks-main').addEventListener('click', () => doEmailMyPicks('picks-email-main'));
+document.getElementById('btn-picks-end').addEventListener('click', () => doEmailMyPicks('picks-email-end'));
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 document.getElementById('header-date').textContent = new Date().toLocaleDateString('en-CA', {
