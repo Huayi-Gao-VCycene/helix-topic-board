@@ -1799,6 +1799,497 @@ body {
 .card:nth-child(8)  { animation-delay: 0.16s; }
 .card:nth-child(9)  { animation-delay: 0.18s; }
 .card:nth-child(10) { animation-delay: 0.20s; }
+
+/* ── SWIPE DECK ─────────────────────────────────────────────────────────────── */
+#swipe-deck-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: var(--ink);
+  background-image:
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+#swipe-deck-overlay.hidden { display: none; }
+
+/* Top bar inside deck */
+.swipe-top-bar {
+  width: 100%;
+  padding: 10px 16px 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--ink-mid);
+  border-bottom: 1px solid var(--rule);
+  flex-shrink: 0;
+}
+
+.swipe-top-bar .btn-swipe-close {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--rule-strong);
+  background: transparent;
+  color: var(--paper-dim);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.swipe-top-bar .btn-swipe-close:hover { background: var(--rule-strong); color: var(--paper); }
+
+.swipe-progress {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--paper-ghost);
+  flex: 1;
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+
+.swipe-undo-btn {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--rule-strong);
+  background: transparent;
+  color: var(--paper-ghost);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.swipe-undo-btn:hover { background: var(--rule-strong); color: var(--paper); }
+.swipe-undo-btn:disabled { opacity: 0.3; cursor: default; }
+
+/* Name field inside deck */
+.swipe-name-bar {
+  width: 100%;
+  max-width: 500px;
+  padding: 8px 16px 0;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.swipe-name-bar label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--paper-ghost);
+  white-space: nowrap;
+}
+
+.swipe-name-input {
+  flex: 1;
+  background: var(--ink-mid);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  padding: 6px 10px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.swipe-name-input:focus { border-color: rgba(91,141,184,0.5); }
+.swipe-name-input::placeholder { color: var(--paper-ghost); }
+
+/* Track filter chips */
+.swipe-filter-bar {
+  width: 100%;
+  max-width: 500px;
+  padding: 8px 16px 0;
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+.swipe-filter-chip {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--rule-strong);
+  background: transparent;
+  color: var(--paper-ghost);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.swipe-filter-chip.active-all { color: var(--paper); border-color: rgba(240,232,216,0.35); background: rgba(240,232,216,0.06); }
+.swipe-filter-chip[data-track="validate"].active { color: var(--validate); border-color: rgba(224,169,59,0.5); background: var(--validate-dim); }
+.swipe-filter-chip[data-track="build"].active    { color: var(--build);    border-color: rgba(63,163,122,0.5);  background: var(--build-dim); }
+.swipe-filter-chip[data-track="strategy"].active { color: var(--strategy); border-color: rgba(91,141,184,0.5);  background: var(--strategy-dim); }
+.swipe-filter-chip[data-track="raise"].active    { color: var(--raise);    border-color: rgba(181,72,90,0.5);   background: var(--raise-dim); }
+.swipe-filter-chip[data-track="mindset"].active  { color: var(--mindset);  border-color: rgba(155,123,176,0.5); background: var(--mindset-dim); }
+
+/* Card stack arena */
+.swipe-arena {
+  flex: 1;
+  width: 100%;
+  max-width: 500px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 16px 0;
+  overflow: hidden;
+}
+
+/* Stack ghost cards behind */
+.swipe-ghost {
+  position: absolute;
+  inset: 16px;
+  background: var(--ink-soft);
+  border: 1px solid var(--rule-strong);
+  border-radius: 12px;
+  pointer-events: none;
+}
+.swipe-ghost-1 {
+  transform: translateY(10px) scale(0.96);
+  opacity: 0.45;
+}
+.swipe-ghost-2 {
+  transform: translateY(20px) scale(0.92);
+  opacity: 0.22;
+}
+
+/* The live swipeable card */
+.swipe-card {
+  position: absolute;
+  inset: 16px;
+  background: var(--ink-mid);
+  border: 1px solid var(--rule-strong);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  user-select: none;
+  touch-action: none;
+  cursor: grab;
+  will-change: transform;
+  transition: box-shadow 0.15s;
+}
+.swipe-card:active { cursor: grabbing; }
+.swipe-card.animating { transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.35s ease; cursor: default; }
+.swipe-card.spring-back { transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+/* Track top accent */
+.swipe-card.validate { border-top: 3px solid var(--validate); }
+.swipe-card.build    { border-top: 3px solid var(--build); }
+.swipe-card.strategy { border-top: 3px solid var(--strategy); }
+.swipe-card.raise    { border-top: 3px solid var(--raise); }
+.swipe-card.mindset  { border-top: 3px solid var(--mindset); }
+
+.swipe-card-content {
+  flex: 1;
+  padding: 20px 20px 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.swipe-track-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.swipe-card.validate .swipe-track-label { color: var(--validate); }
+.swipe-card.build    .swipe-track-label { color: var(--build); }
+.swipe-card.strategy .swipe-track-label { color: var(--strategy); }
+.swipe-card.raise    .swipe-track-label { color: var(--raise); }
+.swipe-card.mindset  .swipe-track-label { color: var(--mindset); }
+
+.swipe-card-title {
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--paper);
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.swipe-card-hook {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.82rem;
+  color: var(--paper-dim);
+  line-height: 1.55;
+  margin-bottom: 14px;
+}
+
+.swipe-card-facts {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.swipe-fact-row {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  line-height: 1.4;
+}
+
+.swipe-fact-label {
+  color: var(--paper-ghost);
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 42px;
+}
+
+.swipe-fact-value {
+  color: var(--paper-dim);
+}
+
+/* "More" toggle */
+.swipe-more-toggle {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--paper-ghost);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px 0;
+  margin-top: 2px;
+  transition: color 0.15s;
+  text-align: left;
+  align-self: flex-start;
+}
+.swipe-more-toggle:hover { color: var(--paper); }
+
+.swipe-card-extra {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  flex-shrink: 0;
+  max-height: 120px;
+}
+.swipe-card-extra.hidden { display: none; }
+
+.swipe-extra-block { }
+.swipe-extra-heading {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--paper-ghost);
+  margin-bottom: 3px;
+}
+.swipe-extra-text {
+  font-family: var(--serif);
+  font-size: 0.75rem;
+  color: var(--paper-dim);
+  line-height: 1.55;
+}
+
+/* Stamp overlays */
+.swipe-stamp {
+  position: absolute;
+  top: 28px;
+  font-family: var(--mono);
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border-width: 3px;
+  border-style: solid;
+  opacity: 0;
+  pointer-events: none;
+  transform: rotate(-15deg);
+  text-transform: uppercase;
+}
+.swipe-stamp-want {
+  left: 18px;
+  color: var(--build);
+  border-color: var(--build);
+  transform: rotate(-12deg);
+}
+.swipe-stamp-skip {
+  right: 18px;
+  color: var(--raise);
+  border-color: var(--raise);
+  transform: rotate(12deg);
+}
+
+/* Action buttons row */
+.swipe-actions {
+  width: 100%;
+  max-width: 500px;
+  padding: 14px 16px 18px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.swipe-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2px solid;
+  cursor: pointer;
+  font-size: 1.4rem;
+  line-height: 1;
+  transition: all 0.15s;
+  width: 58px;
+  height: 58px;
+  background: var(--ink-soft);
+  flex-shrink: 0;
+}
+
+.swipe-skip-btn {
+  border-color: rgba(181,72,90,0.5);
+  color: var(--raise);
+}
+.swipe-skip-btn:hover {
+  background: rgba(181,72,90,0.15);
+  border-color: var(--raise);
+  box-shadow: 0 0 16px rgba(181,72,90,0.3);
+  transform: scale(1.07);
+}
+
+.swipe-want-btn {
+  border-color: rgba(63,163,122,0.5);
+  color: var(--build);
+  width: 68px;
+  height: 68px;
+  font-size: 1.7rem;
+}
+.swipe-want-btn:hover {
+  background: rgba(63,163,122,0.15);
+  border-color: var(--build);
+  box-shadow: 0 0 20px rgba(63,163,122,0.3);
+  transform: scale(1.07);
+}
+
+/* Empty / end screen */
+.swipe-end-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex: 1;
+  padding: 32px 24px;
+  gap: 16px;
+}
+.swipe-end-screen.hidden { display: none; }
+
+.swipe-end-emoji {
+  font-size: 3rem;
+}
+
+.swipe-end-heading {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--paper);
+  line-height: 1.2;
+}
+
+.swipe-end-sub {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.88rem;
+  color: var(--paper-dim);
+  line-height: 1.55;
+}
+
+.swipe-end-count {
+  font-family: var(--mono);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--build);
+}
+
+.swipe-end-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.swipe-end-btn {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 9px 20px;
+  border-radius: var(--radius);
+  border: 1px solid var(--rule-strong);
+  background: transparent;
+  color: var(--paper-dim);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.swipe-end-btn:hover { background: var(--rule-strong); color: var(--paper); }
+.swipe-end-btn.primary {
+  border-color: rgba(63,163,122,0.5);
+  color: var(--build);
+  background: rgba(63,163,122,0.08);
+}
+.swipe-end-btn.primary:hover {
+  background: rgba(63,163,122,0.18);
+  border-color: var(--build);
+  box-shadow: 0 0 12px rgba(63,163,122,0.2);
+}
+
+/* Mobile: auto-activate swipe deck */
+@media (max-width: 768px) {
+  #swipe-deck-overlay:not(.hidden) ~ * { }
+}
+
+/* Swipe mode toggle button in controls bar */
+.btn-swipe {
+  border-color: rgba(155,123,176,0.45);
+  color: rgba(185,155,210,0.9);
+  background: rgba(155,123,176,0.06);
+}
+.btn-swipe:hover {
+  background: rgba(155,123,176,0.14);
+  color: var(--mindset);
+  border-color: var(--mindset);
+  box-shadow: 0 0 10px rgba(155,123,176,0.18);
+}
 </style>
 </head>
 <body>
@@ -1835,6 +2326,7 @@ body {
   </div>
   <button class="btn btn-merge" id="btn-import-merge">Import &amp; merge</button>
   <button class="btn btn-danger" id="btn-reset">Reset Session</button>
+  <button class="btn btn-swipe" id="btn-open-swipe">📱 Swipe mode</button>
 </div>
 
 <!-- HOW TO VOTE STRIP -->
@@ -2051,6 +2543,97 @@ body {
       <span class="live-auto-note">Auto-refreshes every 20 s while open</span>
       <button class="btn" id="live-dismiss-btn">Close</button>
     </div>
+  </div>
+</div>
+
+<!-- SWIPE DECK OVERLAY -->
+<div id="swipe-deck-overlay" class="hidden" role="region" aria-label="Swipe deck">
+
+  <!-- Top bar: close / progress / undo -->
+  <div class="swipe-top-bar">
+    <button class="btn-swipe-close" id="swipe-close-btn">✕ Browse list</button>
+    <div class="swipe-progress" id="swipe-progress">— / —</div>
+    <button class="swipe-undo-btn" id="swipe-undo-btn" disabled>↩ Undo</button>
+  </div>
+
+  <!-- Optional name mirror -->
+  <div class="swipe-name-bar">
+    <label for="swipe-name-input">Name</label>
+    <input type="text" id="swipe-name-input" class="swipe-name-input" placeholder="Optional — mirrors to board" maxlength="60" autocomplete="off">
+  </div>
+
+  <!-- Track filter chips -->
+  <div class="swipe-filter-bar" id="swipe-filter-bar">
+    <button class="swipe-filter-chip active-all" data-track="all">All tracks</button>
+    <button class="swipe-filter-chip" data-track="validate">Validate</button>
+    <button class="swipe-filter-chip" data-track="build">Build</button>
+    <button class="swipe-filter-chip" data-track="strategy">Strategy</button>
+    <button class="swipe-filter-chip" data-track="raise">Raise</button>
+    <button class="swipe-filter-chip" data-track="mindset">Mindset</button>
+  </div>
+
+  <!-- Card arena (ghost stack + live card) -->
+  <div class="swipe-arena" id="swipe-arena">
+    <!-- Ghost background cards for stacked effect -->
+    <div class="swipe-ghost swipe-ghost-2" id="swipe-ghost-2"></div>
+    <div class="swipe-ghost swipe-ghost-1" id="swipe-ghost-1"></div>
+
+    <!-- The live swipeable card (rebuilt each time) -->
+    <div class="swipe-card" id="swipe-card" aria-live="polite">
+      <!-- stamps -->
+      <div class="swipe-stamp swipe-stamp-want" id="swipe-stamp-want">WANT ✓</div>
+      <div class="swipe-stamp swipe-stamp-skip" id="swipe-stamp-skip">SKIP</div>
+
+      <div class="swipe-card-content" id="swipe-card-content">
+        <div class="swipe-track-label" id="sc-track"></div>
+        <div class="swipe-card-title" id="sc-title"></div>
+        <div class="swipe-card-hook" id="sc-hook"></div>
+        <div class="swipe-card-facts">
+          <div class="swipe-fact-row">
+            <span class="swipe-fact-label">Issue</span>
+            <span class="swipe-fact-value" id="sc-problem"></span>
+          </div>
+          <div class="swipe-fact-row">
+            <span class="swipe-fact-label">Model</span>
+            <span class="swipe-fact-value" id="sc-framework"></span>
+          </div>
+          <div class="swipe-fact-row">
+            <span class="swipe-fact-label">Tool</span>
+            <span class="swipe-fact-value" id="sc-tool"></span>
+          </div>
+        </div>
+        <button class="swipe-more-toggle" id="sc-more-toggle">ⓘ more</button>
+        <div class="swipe-card-extra hidden" id="sc-extra">
+          <div class="swipe-extra-block">
+            <div class="swipe-extra-heading">Mental model</div>
+            <div class="swipe-extra-text" id="sc-model-desc"></div>
+          </div>
+          <div class="swipe-extra-block">
+            <div class="swipe-extra-heading">Tool / skill</div>
+            <div class="swipe-extra-text" id="sc-tool-desc"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- End screen (shown when deck is exhausted) -->
+    <div class="swipe-end-screen hidden" id="swipe-end-screen">
+      <div class="swipe-end-emoji">✓</div>
+      <div class="swipe-end-heading">You're done — thank you!</div>
+      <div class="swipe-end-count" id="swipe-end-count"></div>
+      <div class="swipe-end-sub">Your votes are saved and submitted.</div>
+      <div class="swipe-end-actions">
+        <button class="swipe-end-btn primary" id="swipe-end-results">📊 View live results</button>
+        <button class="swipe-end-btn" id="swipe-end-restart">↺ Restart deck</button>
+        <button class="swipe-end-btn" id="swipe-end-browse">Browse full list</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Skip / Want action buttons -->
+  <div class="swipe-actions" id="swipe-actions">
+    <button class="swipe-action-btn swipe-skip-btn" id="swipe-skip-btn" aria-label="Skip this topic">✗</button>
+    <button class="swipe-action-btn swipe-want-btn" id="swipe-want-btn" aria-label="Want this topic — vote">✓</button>
   </div>
 </div>
 
@@ -2925,6 +3508,410 @@ document.getElementById('live-backdrop').addEventListener('click', function(e) {
 
 // ── FLUSH PENDING VOTES ON LOAD ───────────────────────────────────────────────
 flushPending();
+
+// ── SWIPE DECK ────────────────────────────────────────────────────────────────
+(function initSwipeDeck() {
+  /* ---- Config ---- */
+  const SWIPE_SESH_KEY = 'helix_swiped_' + SESSION_ID;
+  const SWIPE_THRESHOLD_RATIO = 0.33; // fraction of card width to trigger fling
+
+  /* ---- State ---- */
+  let deckQueue   = [];      // ordered array of card objects for this session
+  let deckIndex   = 0;       // current top index
+  let filterTrack = 'all';   // active track filter
+  let decidedIds  = new Set( // already handled cards (persisted)
+    JSON.parse(localStorage.getItem(SWIPE_SESH_KEY) || '[]')
+  );
+  let undoStack   = [];      // [{id, action: 'vote'|'skip'}]
+  let swipeVoteCount = 0;    // tally for end screen
+  let isDragging  = false;
+  let startX = 0, startY = 0, currentX = 0;
+  let cardWidth = 0;
+
+  /* ---- DOM refs ---- */
+  const overlay      = document.getElementById('swipe-deck-overlay');
+  const card         = document.getElementById('swipe-card');
+  const cardContent  = document.getElementById('swipe-card-content');
+  const progressEl   = document.getElementById('swipe-progress');
+  const undoBtn      = document.getElementById('swipe-undo-btn');
+  const skipBtn      = document.getElementById('swipe-skip-btn');
+  const wantBtn      = document.getElementById('swipe-want-btn');
+  const stampWant    = document.getElementById('swipe-stamp-want');
+  const stampSkip    = document.getElementById('swipe-stamp-skip');
+  const endScreen    = document.getElementById('swipe-end-screen');
+  const actionsBar   = document.getElementById('swipe-actions');
+  const swipeArena   = document.getElementById('swipe-arena');
+  const filterBar    = document.getElementById('swipe-filter-bar');
+  const nameInput    = document.getElementById('swipe-name-input');
+  const voterNameEl  = document.getElementById('voter-name');
+  const moreToggle   = document.getElementById('sc-more-toggle');
+  const extraPanel   = document.getElementById('sc-extra');
+
+  /* ---- Name syncing ---- */
+  nameInput.addEventListener('input', () => {
+    voterNameEl.value = nameInput.value;
+  });
+  voterNameEl.addEventListener('input', () => {
+    nameInput.value = voterNameEl.value;
+  });
+  // Pre-fill if voter-name already has a value
+  nameInput.value = voterNameEl.value;
+
+  /* ---- More toggle ---- */
+  moreToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = !extraPanel.classList.contains('hidden');
+    extraPanel.classList.toggle('hidden', isOpen);
+    moreToggle.textContent = isOpen ? 'ⓘ more' : '▲ less';
+  });
+
+  /* ---- Save decided set ---- */
+  function saveDecided() {
+    try { localStorage.setItem(SWIPE_SESH_KEY, JSON.stringify([...decidedIds])); } catch {}
+  }
+
+  /* ---- Build queue from CARDS (shuffle + filter) ---- */
+  function buildQueue(track) {
+    let pool = CARDS.filter(c => {
+      if (decidedIds.has(c.id)) return false;
+      if (track !== 'all' && c.category !== track) return false;
+      return true;
+    });
+    // Fisher-Yates shuffle
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    return pool;
+  }
+
+  /* ---- Populate the card DOM ---- */
+  function TRACK_NAMES_LOCAL(slug) {
+    const map = { validate:'Validate & Sell', build:'Build & Team', strategy:'Strategy & Moats', raise:'Raise & Metrics', mindset:'Mindset & Discipline' };
+    return map[slug] || slug;
+  }
+
+  function populateCard(c) {
+    // Reset card position / classes
+    card.style.transform = '';
+    card.classList.remove('animating', 'spring-back', 'validate', 'build', 'strategy', 'raise', 'mindset');
+    card.classList.add(c.category);
+
+    // Reset stamps
+    stampWant.style.opacity = '0';
+    stampSkip.style.opacity = '0';
+
+    // Reset more toggle
+    extraPanel.classList.add('hidden');
+    moreToggle.textContent = 'ⓘ more';
+
+    // Fill content
+    document.getElementById('sc-track').textContent     = TRACK_NAMES_LOCAL(c.category);
+    document.getElementById('sc-title').textContent     = c.title || '';
+    document.getElementById('sc-hook').textContent      = c.hook || '';
+    document.getElementById('sc-problem').textContent   = c.problem || '';
+    document.getElementById('sc-framework').textContent = c.framework || '';
+    document.getElementById('sc-tool').textContent      = c.tool || '';
+    document.getElementById('sc-model-desc').textContent = c.modelDesc || '';
+    document.getElementById('sc-tool-desc').textContent  = c.toolDesc || '';
+
+    card.style.display = '';
+    card.style.opacity = '1';
+  }
+
+  /* ---- Update progress counter ---- */
+  function updateProgress() {
+    const total = CARDS.filter(c => filterTrack === 'all' || c.category === filterTrack).length;
+    const done  = [...decidedIds].filter(id => {
+      if (filterTrack === 'all') return true;
+      const c = CARDS.find(x => x.id === id);
+      return c && c.category === filterTrack;
+    }).length;
+    progressEl.textContent = done + ' / ' + total;
+  }
+
+  /* ---- Advance to next card ---- */
+  function advance() {
+    deckIndex++;
+    undoBtn.disabled = undoStack.length === 0;
+    updateProgress();
+    if (deckIndex >= deckQueue.length) {
+      // refill from remaining undecided (in case filter changed or queue ran out early)
+      const remaining = buildQueue(filterTrack);
+      if (remaining.length === 0) {
+        showEndScreen();
+        return;
+      }
+      deckQueue = [...deckQueue, ...remaining];
+    }
+    populateCard(deckQueue[deckIndex]);
+  }
+
+  /* ---- Decision handlers ---- */
+  function decideWant() {
+    const c = deckQueue[deckIndex];
+    if (!c) return;
+    decidedIds.add(c.id);
+    saveDecided();
+    undoStack.push({ id: c.id, action: 'vote' });
+    swipeVoteCount++;
+    window._helixVoteProxy(c.id, 1);
+    sbLogEvent('swipe_want', c.id, { mode: 'swipe' });
+    advance();
+  }
+
+  function decideSkip() {
+    const c = deckQueue[deckIndex];
+    if (!c) return;
+    decidedIds.add(c.id);
+    saveDecided();
+    undoStack.push({ id: c.id, action: 'skip' });
+    sbLogEvent('skip', c.id, null);
+    advance();
+  }
+
+  /* ---- Undo last decision ---- */
+  function undoLast() {
+    if (!undoStack.length) return;
+    const last = undoStack.pop();
+    decidedIds.delete(last.id);
+    saveDecided();
+    if (last.action === 'vote') {
+      swipeVoteCount = Math.max(0, swipeVoteCount - 1);
+      window._helixVoteProxy(last.id, -1);
+    }
+    // Put the undone card back at current position
+    const c = CARDS.find(x => x.id === last.id);
+    if (c) {
+      deckQueue.splice(deckIndex, 0, c);
+    }
+    updateProgress();
+    undoBtn.disabled = undoStack.length === 0;
+    if (endScreen && !endScreen.classList.contains('hidden')) {
+      endScreen.classList.add('hidden');
+      card.style.display = '';
+      actionsBar.style.display = '';
+    }
+    populateCard(deckQueue[deckIndex]);
+  }
+
+  /* ---- End screen ---- */
+  function showEndScreen() {
+    card.style.display = 'none';
+    actionsBar.style.display = 'none';
+    endScreen.classList.remove('hidden');
+    const n = swipeVoteCount;
+    document.getElementById('swipe-end-count').textContent =
+      'You picked ' + n + ' topic' + (n !== 1 ? 's' : '') + '.';
+  }
+
+  /* ---- Fling animation then decide ---- */
+  function fling(direction) {
+    // direction: 1=right(want), -1=left(skip)
+    const dist = window.innerWidth * 1.3;
+    const rot  = direction * 18;
+    card.classList.add('animating');
+    card.style.transform = `translateX(${direction * dist}px) rotate(${rot}deg)`;
+    card.style.opacity = '0';
+    const handler = () => {
+      card.removeEventListener('transitionend', handler);
+      card.classList.remove('animating');
+      if (direction > 0) decideWant();
+      else decideSkip();
+    };
+    card.addEventListener('transitionend', handler, { once: true });
+  }
+
+  /* ---- Spring back ---- */
+  function springBack() {
+    card.classList.add('spring-back');
+    card.style.transform = '';
+    stampWant.style.opacity = '0';
+    stampSkip.style.opacity = '0';
+    const handler = () => {
+      card.removeEventListener('transitionend', handler);
+      card.classList.remove('spring-back');
+    };
+    card.addEventListener('transitionend', handler, { once: true });
+  }
+
+  /* ---- Drag logic (touch + pointer) ---- */
+  function onDragStart(clientX, clientY) {
+    if (!deckQueue[deckIndex]) return;
+    isDragging = true;
+    startX = clientX;
+    startY = clientY;
+    currentX = 0;
+    cardWidth = card.offsetWidth || 360;
+    card.classList.remove('spring-back', 'animating');
+  }
+
+  function onDragMove(clientX) {
+    if (!isDragging) return;
+    currentX = clientX - startX;
+    const rot = currentX / cardWidth * 18;
+    card.style.transform = `translateX(${currentX}px) rotate(${rot}deg)`;
+
+    const ratio = Math.abs(currentX) / (cardWidth * SWIPE_THRESHOLD_RATIO);
+    const clamped = Math.min(ratio, 1);
+
+    if (currentX > 0) {
+      stampWant.style.opacity = String(clamped);
+      stampSkip.style.opacity = '0';
+    } else if (currentX < 0) {
+      stampSkip.style.opacity = String(clamped);
+      stampWant.style.opacity = '0';
+    } else {
+      stampWant.style.opacity = '0';
+      stampSkip.style.opacity = '0';
+    }
+  }
+
+  function onDragEnd() {
+    if (!isDragging) return;
+    isDragging = false;
+    const threshold = (card.offsetWidth || 360) * SWIPE_THRESHOLD_RATIO;
+    if (currentX > threshold) {
+      fling(1);
+    } else if (currentX < -threshold) {
+      fling(-1);
+    } else {
+      springBack();
+    }
+  }
+
+  // Pointer events (mouse + touch via pointer API)
+  card.addEventListener('pointerdown', (e) => {
+    // Ignore clicks on buttons inside card
+    if (e.target.closest('button')) return;
+    card.setPointerCapture(e.pointerId);
+    onDragStart(e.clientX, e.clientY);
+  });
+  card.addEventListener('pointermove', (e) => {
+    if (!isDragging) return;
+    onDragMove(e.clientX);
+  });
+  card.addEventListener('pointerup', onDragEnd);
+  card.addEventListener('pointercancel', onDragEnd);
+
+  /* ---- Button actions ---- */
+  skipBtn.addEventListener('click', () => {
+    if (deckQueue[deckIndex]) fling(-1);
+  });
+  wantBtn.addEventListener('click', () => {
+    if (deckQueue[deckIndex]) fling(1);
+  });
+  undoBtn.addEventListener('click', undoLast);
+
+  /* ---- Filter chips ---- */
+  filterBar.querySelectorAll('.swipe-filter-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const track = chip.dataset.track;
+      filterTrack = track;
+      // Update chip styles
+      filterBar.querySelectorAll('.swipe-filter-chip').forEach(c => {
+        c.classList.remove('active-all', 'active');
+      });
+      if (track === 'all') chip.classList.add('active-all');
+      else chip.classList.add('active');
+      // Rebuild queue (keep already-decided)
+      deckIndex = 0;
+      undoStack = [];
+      undoBtn.disabled = true;
+      deckQueue = buildQueue(filterTrack);
+      endScreen.classList.add('hidden');
+      actionsBar.style.display = '';
+      updateProgress();
+      if (deckQueue.length === 0) {
+        showEndScreen();
+      } else {
+        card.style.display = '';
+        card.style.opacity = '1';
+        populateCard(deckQueue[0]);
+      }
+    });
+  });
+
+  /* ---- Keyboard ← → ---- */
+  function swipeKeyHandler(e) {
+    if (overlay.classList.contains('hidden')) return;
+    // Don't steal from input fields
+    if (document.activeElement && ['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+    if (e.key === 'ArrowRight') { e.preventDefault(); if (deckQueue[deckIndex]) fling(1); }
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); if (deckQueue[deckIndex]) fling(-1); }
+  }
+  document.addEventListener('keydown', swipeKeyHandler);
+
+  /* ---- Open / close deck ---- */
+  function openDeck() {
+    // Sync name
+    nameInput.value = voterNameEl.value;
+    // Build/resume queue
+    deckIndex = 0;
+    undoStack = [];
+    undoBtn.disabled = true;
+    swipeVoteCount = [...decidedIds].filter(id => {
+      // count only voted ones by checking local votes
+      return votes[id] > 0;
+    }).length;
+    deckQueue = buildQueue(filterTrack);
+    endScreen.classList.add('hidden');
+    actionsBar.style.display = '';
+    card.style.display = '';
+    card.style.opacity = '1';
+    overlay.classList.remove('hidden');
+    updateProgress();
+    if (deckQueue.length === 0) {
+      showEndScreen();
+    } else {
+      populateCard(deckQueue[0]);
+    }
+    sbLogEvent('swipe_open', null, { filter: filterTrack });
+  }
+
+  function closeDeck() {
+    overlay.classList.add('hidden');
+    sbLogEvent('swipe_close', null, { voted: swipeVoteCount });
+  }
+
+  document.getElementById('swipe-close-btn').addEventListener('click', closeDeck);
+  document.getElementById('btn-open-swipe').addEventListener('click', openDeck);
+
+  /* ---- End screen buttons ---- */
+  document.getElementById('swipe-end-results').addEventListener('click', () => {
+    closeDeck();
+    openLiveResults();
+  });
+  document.getElementById('swipe-end-restart').addEventListener('click', () => {
+    decidedIds.clear();
+    saveDecided();
+    swipeVoteCount = 0;
+    undoStack = [];
+    undoBtn.disabled = true;
+    deckIndex = 0;
+    deckQueue = buildQueue(filterTrack);
+    endScreen.classList.add('hidden');
+    card.style.display = '';
+    actionsBar.style.display = '';
+    updateProgress();
+    if (deckQueue.length === 0) showEndScreen();
+    else populateCard(deckQueue[0]);
+  });
+  document.getElementById('swipe-end-browse').addEventListener('click', closeDeck);
+
+  /* ---- Auto-activate on touch / small screen ---- */
+  function shouldAutoActivate() {
+    return (window.innerWidth <= 768) || ('ontouchstart' in window && window.innerWidth <= 900);
+  }
+
+  // Defer until after full init so CARDS are available
+  requestAnimationFrame(() => {
+    if (shouldAutoActivate()) {
+      openDeck();
+    }
+  });
+
+})(); // end initSwipeDeck
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 document.getElementById('header-date').textContent = new Date().toLocaleDateString('en-CA', {
