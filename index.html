@@ -246,6 +246,52 @@ body {
   border-color: var(--mindset);
 }
 
+.btn-live {
+  border-color: rgba(63,163,122,0.5);
+  color: rgba(90,200,155,0.92);
+  background: rgba(63,163,122,0.07);
+  font-weight: 500;
+}
+
+.btn-live:hover {
+  background: rgba(63,163,122,0.16);
+  color: var(--build);
+  border-color: var(--build);
+  box-shadow: 0 0 10px rgba(63,163,122,0.18);
+}
+
+.btn-live.loading {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+/* offline controls de-emphasis */
+.offline-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+
+.offline-label {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--paper-ghost);
+  opacity: 0.55;
+  white-space: nowrap;
+  padding-right: 2px;
+}
+
+.offline-group .btn {
+  opacity: 0.6;
+  font-size: 0.6rem;
+  padding: 5px 10px;
+}
+
+.offline-group .btn:hover { opacity: 1; }
+
 .btn-email {
   border-color: rgba(63,163,122,0.55);
   color: rgba(90,200,155,0.92);
@@ -1470,6 +1516,273 @@ body {
   .howto-steps { gap: 4px 0; flex-direction: column; }
 }
 
+/* ── LIVE RESULTS MODAL ────────────────────────────────────────────────────── */
+.live-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 350;
+  background: rgba(10,8,6,0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease;
+}
+
+.live-backdrop.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.live-modal {
+  background: var(--ink-mid);
+  border: 1px solid var(--rule-strong);
+  border-top: 3px solid var(--build);
+  border-radius: 8px;
+  width: 640px;
+  max-width: 94vw;
+  max-height: 85vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 72px rgba(0,0,0,0.75), 0 4px 16px rgba(0,0,0,0.4);
+  transform: scale(0.95);
+  opacity: 0;
+  transition: transform 0.22s ease, opacity 0.22s ease;
+}
+
+.live-backdrop.open .live-modal {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.live-head {
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.live-head-left { flex: 1; }
+
+.live-title {
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--paper);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.live-title-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--build);
+  box-shadow: 0 0 8px var(--build);
+  flex-shrink: 0;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+.live-meta {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: var(--paper-ghost);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.live-people {
+  color: var(--build);
+}
+
+.live-updated {
+  opacity: 0.6;
+}
+
+.live-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.live-refresh-btn {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(63,163,122,0.4);
+  background: rgba(63,163,122,0.07);
+  color: rgba(90,200,155,0.85);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.live-refresh-btn:hover {
+  background: rgba(63,163,122,0.15);
+  color: var(--build);
+  border-color: var(--build);
+}
+
+.live-refresh-btn:disabled {
+  opacity: 0.4;
+  cursor: wait;
+}
+
+.live-close-btn {
+  background: none;
+  border: none;
+  color: var(--paper-ghost);
+  cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1;
+  padding: 2px 6px;
+  transition: color 0.15s;
+}
+
+.live-close-btn:hover { color: var(--paper); }
+
+.live-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule-strong) transparent;
+}
+
+.live-body::-webkit-scrollbar { width: 3px; }
+.live-body::-webkit-scrollbar-track { background: transparent; }
+.live-body::-webkit-scrollbar-thumb { background: var(--rule-strong); border-radius: 2px; }
+
+.live-error {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--raise);
+  padding: 24px 0;
+  text-align: center;
+  line-height: 1.7;
+}
+
+.live-loading-msg {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--paper-ghost);
+  padding: 24px 0;
+  text-align: center;
+}
+
+.live-lb-header {
+  display: grid;
+  grid-template-columns: 28px 8px 1fr 70px 54px;
+  gap: 0 10px;
+  padding: 0 6px 8px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 4px;
+}
+
+.live-lb-header span {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--paper-ghost);
+  opacity: 0.6;
+}
+
+.live-lb-item {
+  display: grid;
+  grid-template-columns: 28px 8px 1fr 70px 54px;
+  gap: 0 10px;
+  align-items: center;
+  padding: 7px 6px;
+  border-radius: var(--radius);
+  transition: background 0.12s;
+}
+
+.live-lb-item:hover { background: rgba(240,232,216,0.03); }
+
+.live-lb-rank {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--paper-ghost);
+  text-align: right;
+}
+
+.live-lb-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.live-lb-dot.validate  { background: var(--validate); }
+.live-lb-dot.build     { background: var(--build); }
+.live-lb-dot.strategy  { background: var(--strategy); }
+.live-lb-dot.raise     { background: var(--raise); }
+.live-lb-dot.mindset   { background: var(--mindset); }
+
+.live-lb-title {
+  font-family: var(--serif);
+  font-size: 0.76rem;
+  color: var(--paper-dim);
+  line-height: 1.3;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.live-lb-track {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.05em;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.live-lb-track.validate  { color: var(--validate); }
+.live-lb-track.build     { color: var(--build); }
+.live-lb-track.strategy  { color: var(--strategy); }
+.live-lb-track.raise     { color: var(--raise); }
+.live-lb-track.mindset   { color: var(--mindset); }
+
+.live-lb-votes {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--paper);
+  text-align: right;
+}
+
+.live-lb-item:first-child .live-lb-votes { color: var(--validate); }
+
+.live-foot {
+  padding: 10px 20px;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.live-auto-note {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  color: var(--paper-ghost);
+  opacity: 0.5;
+}
+
 /* ── SCROLLBAR GLOBAL ──────────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -1513,9 +1826,13 @@ body {
   <button class="btn btn-export" id="btn-export">Export CSV</button>
   <button class="btn btn-export" id="btn-summary">Session Summary</button>
   <input type="text" class="name-input" id="voter-name" placeholder="Your name (optional)" autocomplete="off" maxlength="60">
-  <button class="btn btn-email" id="btn-email-votes">📧 Email my votes</button>
-  <button class="btn btn-votes" id="btn-copy-votes">Copy my votes</button>
-  <button class="btn btn-votes" id="btn-save-votes">Save my votes</button>
+  <button class="btn btn-live" id="btn-live-results">📊 Live results</button>
+  <div class="offline-group" title="Votes auto-save — use these only if offline">
+    <span class="offline-label">Offline?</span>
+    <button class="btn btn-email" id="btn-email-votes">📧 Email</button>
+    <button class="btn btn-votes" id="btn-copy-votes">Copy</button>
+    <button class="btn btn-votes" id="btn-save-votes">Save</button>
+  </div>
   <button class="btn btn-merge" id="btn-import-merge">Import &amp; merge</button>
   <button class="btn btn-danger" id="btn-reset">Reset Session</button>
 </div>
@@ -1536,10 +1853,10 @@ body {
       </li>
       <li>
         <span class="howto-step-num">3.</span>
-        <span>Enter your <strong>name</strong>, then hit <strong>📧 Email my votes</strong> — or <strong>Copy my votes</strong> and reply to my email with the code.</span>
+        <span>Enter your <strong>name</strong> (optional) — <strong>your votes save automatically as you tap.</strong></span>
       </li>
     </ol>
-    <div class="howto-aside">(Coach view: "Import &amp; merge" totals everyone's emailed codes.)</div>
+    <div class="howto-aside">(Coach view: hit <strong style="color:var(--build);font-style:normal;">📊 Live results</strong> for the running aggregate tally across all participants. The "Offline? Email / Copy / Save" buttons remain as a manual fallback.)</div>
   </div>
   <button class="howto-dismiss" id="howto-dismiss" aria-label="Dismiss instructions">✕</button>
 </div>
@@ -1704,6 +2021,35 @@ body {
     <div class="import-foot">
       <button class="btn-merge-action" id="btn-do-merge">Merge</button>
       <button class="btn" id="import-dismiss">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- LIVE RESULTS MODAL -->
+<div class="live-backdrop" id="live-backdrop" role="dialog" aria-modal="true" aria-label="Live global results">
+  <div class="live-modal">
+    <div class="live-head">
+      <div class="live-head-left">
+        <div class="live-title">
+          <span class="live-title-dot"></span>
+          Global Live Results
+        </div>
+        <div class="live-meta">
+          <span class="live-people" id="live-people-count"></span>
+          <span class="live-updated" id="live-updated-at"></span>
+        </div>
+      </div>
+      <div class="live-head-actions">
+        <button class="live-refresh-btn" id="live-refresh-btn">↺ Refresh</button>
+        <button class="live-close-btn" id="live-close-btn" aria-label="Close live results">✕</button>
+      </div>
+    </div>
+    <div class="live-body" id="live-body">
+      <div class="live-loading-msg">Loading…</div>
+    </div>
+    <div class="live-foot">
+      <span class="live-auto-note">Auto-refreshes every 20 s while open</span>
+      <button class="btn" id="live-dismiss-btn">Close</button>
     </div>
   </div>
 </div>
@@ -2306,7 +2652,8 @@ document.getElementById('btn-do-merge').addEventListener('click', async () => {
 // ── KEYBOARD ─────────────────────────────────────────────────────────────────
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
-    if (document.getElementById('import-backdrop').classList.contains('open')) closeImportModal();
+    if (document.getElementById('live-backdrop').classList.contains('open')) closeLiveResults();
+    else if (document.getElementById('import-backdrop').classList.contains('open')) closeImportModal();
     else if (activeDetailId) closeDetail();
     else closeSummaryModal();
   }
@@ -2325,6 +2672,259 @@ const HOWTO_KEY = 'helix_howto_dismissed';
     try { localStorage.setItem(HOWTO_KEY, '1'); } catch {}
   });
 })();
+
+// ── SUPABASE CONFIG ───────────────────────────────────────────────────────────
+const SB_URL = 'https://vsdsegpdnlgrfjawqcbe.supabase.co';
+const SB_KEY = 'sb_publishable_mejS-fdPBBy9gDYHu_4I7w_tB_DzNYr';
+const SB_HEADERS = {
+  'apikey': SB_KEY,
+  'Authorization': 'Bearer ' + SB_KEY,
+  'Content-Type': 'application/json',
+  'Prefer': 'return=minimal'
+};
+
+// ── SESSION ID ────────────────────────────────────────────────────────────────
+const SESSION_KEY = 'helix_session_id';
+function getSessionId() {
+  let sid = localStorage.getItem(SESSION_KEY);
+  if (!sid) {
+    sid = (typeof crypto !== 'undefined' && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : Date.now().toString(36) + Math.random().toString(36).slice(2);
+    try { localStorage.setItem(SESSION_KEY, sid); } catch {}
+  }
+  return sid;
+}
+const SESSION_ID = getSessionId();
+
+function getVoterName() {
+  return (document.getElementById('voter-name').value || '').trim();
+}
+
+// ── PENDING QUEUE (offline resilience) ───────────────────────────────────────
+const PENDING_KEY = 'helix_pending';
+
+function loadPending() {
+  try { return JSON.parse(localStorage.getItem(PENDING_KEY) || '[]'); } catch { return []; }
+}
+
+function savePending(q) {
+  try { localStorage.setItem(PENDING_KEY, JSON.stringify(q)); } catch {}
+}
+
+async function flushPending() {
+  const q = loadPending();
+  if (!q.length) return;
+  const remaining = [];
+  for (const item of q) {
+    try {
+      const r = await fetch(SB_URL + '/rest/v1/helix_votes', {
+        method: 'POST', headers: SB_HEADERS, body: JSON.stringify(item)
+      });
+      if (!r.ok) remaining.push(item);
+    } catch { remaining.push(item); }
+  }
+  savePending(remaining);
+}
+
+// ── FIRE-AND-FORGET HELPERS ───────────────────────────────────────────────────
+function sbInsertVote(card_id, delta) {
+  const payload = {
+    session_id: SESSION_ID,
+    voter_name: getVoterName(),
+    card_id: card_id,
+    delta: delta
+  };
+  fetch(SB_URL + '/rest/v1/helix_votes', {
+    method: 'POST', headers: SB_HEADERS, body: JSON.stringify(payload)
+  }).catch(() => {
+    // Network failed — queue for later
+    const q = loadPending();
+    q.push(payload);
+    savePending(q);
+  });
+}
+
+function sbLogEvent(event_type, card_id, meta) {
+  const payload = {
+    session_id: SESSION_ID,
+    voter_name: getVoterName(),
+    event_type: event_type,
+    card_id: card_id || null,
+    meta: meta || null
+  };
+  fetch(SB_URL + '/rest/v1/helix_events', {
+    method: 'POST', headers: SB_HEADERS, body: JSON.stringify(payload)
+  }).catch(() => {}); // silently ignore — events are nice-to-have
+}
+
+// ── SESSION START EVENT (once per session) ────────────────────────────────────
+const SESSION_FIRED_KEY = 'helix_session_fired_' + SESSION_ID;
+(function fireSessionStart() {
+  if (localStorage.getItem(SESSION_FIRED_KEY)) return;
+  try { localStorage.setItem(SESSION_FIRED_KEY, '1'); } catch {}
+  sbLogEvent('session_start', null, { ua: navigator.userAgent.slice(0, 120) });
+})();
+
+// ── CARD OPEN THROTTLE (once per card per session) ────────────────────────────
+const cardOpenFired = new Set(
+  JSON.parse(localStorage.getItem('helix_opened_' + SESSION_ID) || '[]')
+);
+
+function maybeLogCardOpen(card_id) {
+  if (cardOpenFired.has(card_id)) return;
+  cardOpenFired.add(card_id);
+  try { localStorage.setItem('helix_opened_' + SESSION_ID, JSON.stringify([...cardOpenFired])); } catch {}
+  sbLogEvent('card_open', card_id, null);
+}
+
+// ── PATCH openDetail TO LOG CARD OPENS ───────────────────────────────────────
+const _origOpenDetail = openDetail;
+function openDetail(id) {
+  _origOpenDetail(id);
+  maybeLogCardOpen(id);
+}
+
+// ── PATCH VOTE BUTTONS TO FIRE SUPABASE ──────────────────────────────────────
+// The original handlers call addVote(id, delta). We wrap them post-hoc.
+const origAddVote = addVote;
+
+// Extend addVote to also fire Supabase
+window._helixVoteProxy = function(id, delta) {
+  origAddVote(id, delta);
+  sbInsertVote(id, delta);
+};
+
+// Rebind the detail modal vote buttons to use the proxy
+(function rewireVoteButtons() {
+  const plusBtn  = document.getElementById('dm-vote-plus');
+  const minusBtn = document.getElementById('dm-vote-minus');
+
+  const newPlus = plusBtn.cloneNode(true);
+  const newMinus = minusBtn.cloneNode(true);
+  plusBtn.parentNode.replaceChild(newPlus, plusBtn);
+  minusBtn.parentNode.replaceChild(newMinus, minusBtn);
+
+  newPlus.addEventListener('click', () => {
+    if (!activeDetailId) return;
+    window._helixVoteProxy(activeDetailId, 1);
+  });
+
+  newMinus.addEventListener('click', () => {
+    if (!activeDetailId) return;
+    if ((votes[activeDetailId] || 0) <= 0) return;
+    window._helixVoteProxy(activeDetailId, -1);
+  });
+})();
+
+// ── LIVE RESULTS MODAL ────────────────────────────────────────────────────────
+let liveRefreshTimer = null;
+
+async function fetchLiveTally() {
+  const r = await fetch(SB_URL + '/rest/v1/rpc/helix_vote_tally', {
+    method: 'POST',
+    headers: { ...SB_HEADERS, 'Prefer': 'return=representation' },
+    body: '{}'
+  });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
+}
+
+function renderLiveResults(rows) {
+  const bodyEl = document.getElementById('live-body');
+  const countEl = document.getElementById('live-people-count');
+  const updEl   = document.getElementById('live-updated-at');
+
+  if (!rows || !rows.length) {
+    bodyEl.innerHTML = '<div class="live-loading-msg">No votes recorded yet — be the first!</div>';
+    countEl.textContent = '';
+    updEl.textContent = 'Updated just now';
+    return;
+  }
+
+  // Build lookup from CARDS
+  const cardMap = {};
+  CARDS.forEach(c => { cardMap[c.id] = c; });
+
+  // Compute unique participant count
+  const maxSessions = rows.reduce((max, r) => Math.max(max, parseInt(r.sessions) || 0), 0);
+  const totalPeople = rows.reduce((s, r) => s + (parseInt(r.sessions) || 0), 0);
+  // "sessions" per row = distinct sessions that voted on that card;
+  // best proxy for "people" = max sessions field or unique count from the set
+  const uniqueSessions = new Set(rows.map(r => r.sessions)).size;
+  // Use the max sessions across any card as a lower bound on unique people
+  const peopleCount = Math.max(...rows.map(r => parseInt(r.sessions) || 0));
+
+  countEl.textContent = peopleCount > 0 ? `${peopleCount} ${peopleCount === 1 ? 'person has' : 'people have'} voted` : '';
+  updEl.textContent = 'Updated ' + new Date().toLocaleTimeString('en-CA', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+  // Sort desc by total
+  rows.sort((a, b) => (parseInt(b.total) || 0) - (parseInt(a.total) || 0));
+
+  const items = rows.map((row, i) => {
+    const card = cardMap[row.card_id];
+    const title = card ? card.title : row.card_id;
+    const track = card ? card.category : '';
+    const total = parseInt(row.total) || 0;
+    const sessions = parseInt(row.sessions) || 0;
+    return `
+      <div class="live-lb-item">
+        <span class="live-lb-rank">${i + 1}</span>
+        <span class="live-lb-dot ${track}"></span>
+        <span class="live-lb-title">${escHtml(title)}</span>
+        <span class="live-lb-track ${track}">${track.toUpperCase()}</span>
+        <span class="live-lb-votes" title="${sessions} voter${sessions !== 1 ? 's' : ''}">${total}</span>
+      </div>`;
+  }).join('');
+
+  bodyEl.innerHTML = `
+    <div class="live-lb-header">
+      <span>#</span>
+      <span></span>
+      <span>Topic</span>
+      <span>Track</span>
+      <span style="text-align:right">Votes</span>
+    </div>
+    ${items}`;
+}
+
+async function refreshLive() {
+  const refreshBtn = document.getElementById('live-refresh-btn');
+  const bodyEl = document.getElementById('live-body');
+  if (refreshBtn) { refreshBtn.disabled = true; refreshBtn.textContent = '…'; }
+  try {
+    const rows = await fetchLiveTally();
+    renderLiveResults(rows);
+  } catch (e) {
+    bodyEl.innerHTML = `<div class="live-error">Couldn't reach server — check your connection and try again.<br><small style="opacity:0.6">${escHtml(String(e))}</small></div>`;
+    document.getElementById('live-updated-at').textContent = '';
+  } finally {
+    if (refreshBtn) { refreshBtn.disabled = false; refreshBtn.textContent = '↺ Refresh'; }
+  }
+}
+
+function openLiveResults() {
+  document.getElementById('live-backdrop').classList.add('open');
+  sbLogEvent('live_results_open', null, null);
+  refreshLive();
+  liveRefreshTimer = setInterval(refreshLive, 20000);
+}
+
+function closeLiveResults() {
+  document.getElementById('live-backdrop').classList.remove('open');
+  if (liveRefreshTimer) { clearInterval(liveRefreshTimer); liveRefreshTimer = null; }
+}
+
+document.getElementById('btn-live-results').addEventListener('click', openLiveResults);
+document.getElementById('live-refresh-btn').addEventListener('click', refreshLive);
+document.getElementById('live-close-btn').addEventListener('click', closeLiveResults);
+document.getElementById('live-dismiss-btn').addEventListener('click', closeLiveResults);
+document.getElementById('live-backdrop').addEventListener('click', function(e) {
+  if (e.target === this) closeLiveResults();
+});
+
+// ── FLUSH PENDING VOTES ON LOAD ───────────────────────────────────────────────
+flushPending();
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 document.getElementById('header-date').textContent = new Date().toLocaleDateString('en-CA', {
