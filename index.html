@@ -2780,10 +2780,10 @@ function maybeLogCardOpen(card_id) {
 
 // ── PATCH openDetail TO LOG CARD OPENS ───────────────────────────────────────
 const _origOpenDetail = openDetail;
-function openDetail(id) {
+openDetail = function(id) {
   _origOpenDetail(id);
   maybeLogCardOpen(id);
-}
+};
 
 // ── PATCH VOTE BUTTONS TO FIRE SUPABASE ──────────────────────────────────────
 // The original handlers call addVote(id, delta). We wrap them post-hoc.
