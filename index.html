@@ -549,6 +549,16 @@ body {
   gap: 6px;
 }
 
+.sidebar-subtitle {
+  font-family: var(--mono);
+  font-size: 0.52rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--paper-ghost);
+  opacity: 0.45;
+  margin-top: 3px;
+}
+
 .sidebar-title::before {
   content: '';
   display: inline-block;
@@ -2453,6 +2463,7 @@ body {
   <aside class="sidebar">
     <div class="sidebar-head">
       <div class="sidebar-title">Live Leaderboard</div>
+      <div class="sidebar-subtitle">all participants</div>
       <div class="sidebar-totals">
         <div class="track-total validate">
           <span class="track-total-label">VALIDATE</span>
@@ -2862,7 +2873,19 @@ function addVote(id, delta) {
   votes[id] = Math.max(0, (votes[id] || 0) + delta);
   saveVotes(votes);
   updateGridCard(id, delta > 0);
-  updateLeaderboard();
+  // If we have a live global cache, optimistically update it and re-render
+  // so the sidebar shows the global aggregate + this user's fresh click.
+  if (_liveLeaderboardRows) {
+    const existing = _liveLeaderboardRows.find(r => r.card_id === id);
+    if (existing) {
+      existing.total = Math.max(0, (parseInt(existing.total) || 0) + delta);
+    } else if (delta > 0) {
+      _liveLeaderboardRows.push({ card_id: id, total: delta, sessions: 1 });
+    }
+    renderSidebarLeaderboard(_liveLeaderboardRows);
+  } else {
+    updateLeaderboard();
+  }
   updateTotals();
   sortColumn(CARDS.find(c => c.id === id).category);
   // Update modal count if detail modal is open for this card
@@ -3524,6 +3547,82 @@ async function fetchLiveTally() {
   return r.json();
 }
 
+// ── SIDEBAR LIVE LEADERBOARD ─────────────────────────────────────────────────
+let _liveLeaderboardRows = null; // cache last successful fetch
+
+async function refreshLiveLeaderboard() {
+  try {
+    const rows = await fetchLiveTally();
+    _liveLeaderboardRows = rows;
+    renderSidebarLeaderboard(rows);
+  } catch (e) {
+    // Offline or error — fall back to local votes so sidebar is never empty
+    updateLeaderboard();
+  }
+}
+
+function renderSidebarLeaderboard(rows) {
+  const lbEl = document.getElementById('leaderboard');
+  if (!lbEl) return;
+
+  if (!rows || !rows.length) {
+    // No global data — show local votes as placeholder
+    updateLeaderboard();
+    return;
+  }
+
+  // Build card lookup
+  const cardMap = {};
+  CARDS.forEach(c => { cardMap[c.id] = c; });
+
+  // Sort by total votes desc, take top 12
+  const sorted = rows
+    .map(row => ({
+      card_id: row.card_id,
+      total: parseInt(row.total) || 0,
+      card: cardMap[row.card_id]
+    }))
+    .filter(r => r.total > 0 && r.card)
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 12);
+
+  if (!sorted.length) {
+    lbEl.innerHTML = '<div class="lb-empty">No votes yet.<br>Open a card and vote<br>to rank topics.</div>';
+    // Reset track totals to zeros
+    TRACKS.forEach(({ slug }) => {
+      const el = document.getElementById('total-' + slug);
+      if (el) el.textContent = '0';
+    });
+    document.getElementById('grand-total').textContent = '0';
+    return;
+  }
+
+  lbEl.innerHTML = sorted.map((r, i) => `
+    <div class="lb-item">
+      <span class="lb-rank">${i + 1}</span>
+      <span class="lb-dot ${r.card.category}"></span>
+      <span class="lb-title">${escHtml(truncate(r.card.title, 42))}</span>
+      <span class="lb-count">${r.total}</span>
+    </div>
+  `).join('');
+
+  // Update sidebar track totals from live aggregate
+  const trackTotals = {};
+  TRACKS.forEach(({ slug }) => { trackTotals[slug] = 0; });
+  rows.forEach(row => {
+    const card = cardMap[row.card_id];
+    if (card && trackTotals[card.category] !== undefined) {
+      trackTotals[card.category] += parseInt(row.total) || 0;
+    }
+  });
+  TRACKS.forEach(({ slug }) => {
+    const el = document.getElementById('total-' + slug);
+    if (el) el.textContent = trackTotals[slug];
+  });
+  const grandTotal = Object.values(trackTotals).reduce((s, n) => s + n, 0);
+  document.getElementById('grand-total').textContent = grandTotal;
+}
+
 function renderLiveResults(rows) {
   const bodyEl = document.getElementById('live-body');
   const countEl = document.getElementById('live-people-count');
@@ -3589,9 +3688,15 @@ async function refreshLive() {
   try {
     const rows = await fetchLiveTally();
     renderLiveResults(rows);
+    // Also sync the sidebar with the same fresh data
+    _liveLeaderboardRows = rows;
+    renderSidebarLeaderboard(rows);
   } catch (e) {
     bodyEl.innerHTML = `<div class="live-error">Couldn't reach server — check your connection and try again.<br><small style="opacity:0.6">${escHtml(String(e))}</small></div>`;
     document.getElementById('live-updated-at').textContent = '';
+    // Sidebar fallback: keep current live cache or fall back to local
+    if (_liveLeaderboardRows) renderSidebarLeaderboard(_liveLeaderboardRows);
+    else updateLeaderboard();
   } finally {
     if (refreshBtn) { refreshBtn.disabled = false; refreshBtn.textContent = '↺ Refresh'; }
   }
@@ -4145,8 +4250,13 @@ document.getElementById('header-date').textContent = new Date().toLocaleDateStri
 
 renderColumns();
 TRACKS.forEach(t => sortColumn(t.slug));
+// Local votes render immediately for optimistic feedback
 updateLeaderboard();
 updateTotals();
+// Fetch live global aggregate for sidebar — falls back to local if offline
+refreshLiveLeaderboard();
+// Auto-refresh sidebar every 25 s
+setInterval(refreshLiveLeaderboard, 25000);
 </script>
 </body>
 </html>
