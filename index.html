@@ -2550,6 +2550,7 @@ body {
 <!-- DETAIL MODAL -->
 <div class="detail-backdrop" id="detail-backdrop" role="dialog" aria-modal="true" aria-labelledby="detail-modal-title">
   <div class="detail-modal" id="detail-modal">
+    <img id="dm-cover" class="detail-cover" alt="" style="display:none;width:100%;max-height:190px;object-fit:cover;border-radius:6px 6px 0 0;" />
     <div class="detail-head">
       <div class="detail-head-content">
         <div class="detail-track-label" id="dm-track-label"></div>
@@ -2696,6 +2697,7 @@ body {
       <div class="swipe-stamp swipe-stamp-skip" id="swipe-stamp-skip">SKIP</div>
 
       <div class="swipe-card-content" id="swipe-card-content">
+        <img id="sc-cover" class="swipe-cover" alt="" style="display:none;width:100%;max-height:150px;object-fit:cover;border-radius:8px;margin-bottom:12px;" />
         <div class="swipe-track-label" id="sc-track"></div>
         <div class="swipe-card-title" id="sc-title"></div>
         <div class="swipe-card-hook" id="sc-hook"></div>
@@ -2846,6 +2848,8 @@ const NEWPOSTS = {'the-three-levels-of-entrepreneurship': true, 'control-the-sca
 function newBadge(id){ if(!NEWPOSTS[id]) return ""; return `<span class="new-badge" style="display:inline-block;font-size:9px;font-weight:800;letter-spacing:.05em;color:#fff;background:#2563eb;border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:middle;">NEW</span>`; }
 function shortPrompt(card){ return `You are a rigorous but warm startup coach running the "${card.framework}" method. Coach me through it on my real venture using this exercise: ${card.tool}. Help me avoid this trap: ${card.problem} Rules: ask ONE question at a time; reject vague answers and push for specifics; if I dodge or stay vague twice, name the pattern, offer the most likely answer, and move on; be hard on the answer but kind to me. Begin by asking me to describe my situation.`; }
 function claudeUrl(card){ return 'https://claude.ai/new?q=' + encodeURIComponent(shortPrompt(card)); }
+const COVERS = {"the-day-job-lab": "img/the-day-job-lab.jpg", "the-barbell-startup-keep-your-day-job-bet-big-on-weekends": "img/the-barbell-startup-keep-your-day-job-bet-big-on-weekends.jpg", "the-five-minute-door": "img/the-five-minute-door.jpg", "the-socratic-swap": "img/the-socratic-swap.jpg", "the-sell-first-sequence": "img/the-sell-first-sequence.jpg", "product-as-argument-stop-explaining-and-start-demonstrating": "img/product-as-argument-stop-explaining-and-start-demonstrating.jpg"};
+function setCover(el, id){ if(!el) return; const u = COVERS[id]; if(u){ el.src = u; el.style.display='block'; } else { el.removeAttribute('src'); el.style.display='none'; } }
 let _boardSyncedToLive = false;
 
 function buildCardEl(card) {
@@ -2896,6 +2900,7 @@ function renderColumns() {
     });
     document.getElementById('cnt-' + slug).textContent = trackMap[slug].length + ' topics';
   });
+  filterCards();
 }
 
 // ── VOTE LOGIC ────────────────────────────────────────────────────────────────
@@ -3023,6 +3028,7 @@ function openDetail(id) {
   modal.classList.add(card.category);
 
   document.getElementById('dm-track-label').textContent = TRACK_NAMES[card.category] || card.category;
+  setCover(document.getElementById('dm-cover'), id);
 
   // Header
   const titleEl = document.getElementById('dm-title');
@@ -3083,7 +3089,8 @@ function filterCards() {
     if (!el) return;
     const v = votes[c.id] || 0;
     const isNew = !!NEWPOSTS[c.id];
-    const passesDemand = !_boardSyncedToLive || isNew || v >= 2;
+    const isPublished = WRITTEN[c.id] === 'published';
+    const passesDemand = !isPublished && (!_boardSyncedToLive || isNew || v >= 2);
     const matchesSearch = !searchTerm ||
       (c.title + ' ' + c.framework + ' ' + c.tool).toLowerCase().includes(searchTerm);
     el.classList.toggle('hidden', !(passesDemand && matchesSearch));
@@ -3866,6 +3873,7 @@ flushPending();
 
     // Fill content
     document.getElementById('sc-track').textContent     = TRACK_NAMES_LOCAL(c.category);
+    setCover(document.getElementById('sc-cover'), c.id);
     document.getElementById('sc-title').textContent     = c.title || '';
     document.getElementById('sc-hook').textContent      = c.hook || '';
     document.getElementById('sc-problem').textContent   = c.problem || '';
