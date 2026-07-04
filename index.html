@@ -2819,6 +2819,30 @@ function truncate(str, n) {
 const cardEls = {};
 
 // ── BUILD GRID CARD ───────────────────────────────────────────────────────────
+// ── WRITTEN STATUS (survey → post feedback loop) ──
+const WRITTEN = {
+  'the-dfv-test': 'published',
+  'the-monopoly-finder': 'published',
+  'the-s-curve-relocation-drill': 'published',
+  'definite-optimism-why-having-a-plan-is-a-competitive-advantage': 'published',
+  'the-day-job-lab': 'drafted',
+  'the-barbell-startup-keep-your-day-job-bet-big-on-weekends': 'drafted',
+  'the-five-minute-door': 'drafted',
+  'the-socratic-swap': 'drafted',
+  'the-sell-first-sequence': 'drafted',
+  'product-as-argument-stop-explaining-and-start-demonstrating': 'drafted',
+  'the-ai-replaceability-test': 'drafted'
+};
+function writtenBadge(id, opts) {
+  const s = WRITTEN[id]; if (!s) return '';
+  const live = s === 'published';
+  const label = live ? '✅ Published' : '✍️ Written';
+  const color = live ? '#16a34a' : '#d97706';
+  const mini = opts && opts.mini;
+  return `<span class="written-badge" style="display:inline-block;font-size:${mini ? '9px' : '10px'};font-weight:700;color:${color};border:1px solid ${color};border-radius:4px;padding:${mini ? '0 3px' : '1px 5px'};margin-left:6px;vertical-align:middle;white-space:nowrap;">${label}</span>`;
+}
+let _boardSyncedToLive = false;
+
 function buildCardEl(card) {
   const el = document.createElement('div');
   el.className = 'card';
@@ -2831,7 +2855,7 @@ function buildCardEl(card) {
     <div class="card-inner">
       <div class="card-top">
         <div class="card-body">
-          <div class="card-title">${escHtml(card.title)}</div>
+          <div class="card-title">${escHtml(card.title)}${writtenBadge(card.id)}</div>
           <div class="card-hook">${escHtml(card.hook)}</div>
           <div class="card-chips">
             <div class="chip"><span class="chip-label">Model</span><span class="chip-value" title="${escHtml(card.framework)}">${escHtml(fw)}</span></div>
@@ -3601,7 +3625,7 @@ function renderSidebarLeaderboard(rows) {
     <div class="lb-item">
       <span class="lb-rank">${i + 1}</span>
       <span class="lb-dot ${r.card.category}"></span>
-      <span class="lb-title">${escHtml(truncate(r.card.title, 42))}</span>
+      <span class="lb-title">${escHtml(truncate(r.card.title, 42))}${writtenBadge(r.card_id, { mini: true })}</span>
       <span class="lb-count">${r.total}</span>
     </div>
   `).join('');
@@ -3621,6 +3645,19 @@ function renderSidebarLeaderboard(rows) {
   });
   const grandTotal = Object.values(trackTotals).reduce((s, n) => s + n, 0);
   document.getElementById('grand-total').textContent = grandTotal;
+
+  // Sync the MAIN BOARD to the live global survey tally.
+  rows.forEach(row => {
+    if (cardMap[row.card_id]) votes[row.card_id] = parseInt(row.total) || 0;
+  });
+  CARDS.forEach(c => {
+    const vc = document.getElementById('vc-' + c.id);
+    if (vc) vc.textContent = votes[c.id] || 0;
+  });
+  if (!_boardSyncedToLive) {
+    TRACKS.forEach(t => sortColumn(t.slug));
+    _boardSyncedToLive = true;
+  }
 }
 
 function renderLiveResults(rows) {
