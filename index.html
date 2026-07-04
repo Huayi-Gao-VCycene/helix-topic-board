@@ -11,14 +11,14 @@
 <style>
 /* ── DESIGN TOKENS ─────────────────────────────────────────────────────────── */
 :root {
-  --ink:        #0f0d0a;
-  --ink-mid:    #1c1914;
-  --ink-soft:   #2a2520;
-  --paper:      #f0e8d8;
-  --paper-dim:  #d8ceba;
-  --paper-ghost:#c8bcaa;
-  --rule:       rgba(240,232,216,0.12);
-  --rule-strong:rgba(240,232,216,0.22);
+  --ink:        #efe9dc;
+  --ink-mid:    #ffffff;
+  --ink-soft:   #f7f3ea;
+  --paper:      #211d16;
+  --paper-dim:  #5a5344;
+  --paper-ghost:#938b78;
+  --rule:       rgba(28,24,19,0.12);
+  --rule-strong:rgba(28,24,19,0.22);
 
   /* Track accents — 5 tracks */
   --validate:       #E0A93B;
@@ -45,8 +45,8 @@
   --serif: 'Fraunces', Georgia, serif;
 
   --radius: 4px;
-  --shadow: 0 2px 12px rgba(0,0,0,0.35), 0 1px 3px rgba(0,0,0,0.2);
-  --shadow-hover: 0 6px 28px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.3);
+  --shadow: 0 2px 12px rgba(30,25,15,0.10), 0 1px 3px rgba(30,25,15,0.06);
+  --shadow-hover: 0 6px 26px rgba(30,25,15,0.16), 0 2px 8px rgba(30,25,15,0.09);
 }
 
 /* ── RESET & BASE ──────────────────────────────────────────────────────────── */
@@ -2493,6 +2493,11 @@ body {
       <div class="sidebar-subtitle">live on Substack</div>
     </div>
     <div class="sidebar-list" id="published-list"></div>
+    <div class="sidebar-legend" style="margin-top:16px;padding-top:12px;border-top:1px solid var(--rule);font-size:11px;line-height:1.9;color:var(--paper-dim);">
+      <div style="font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;font-size:9px;margin-bottom:4px;color:var(--paper-ghost);">Skill type</div>
+      <div><span style="color:#B7860B;font-weight:700;">☀ Light skill</span> &mdash; honest craft &amp; self-mastery</div>
+      <div><span style="color:#6D4AA0;font-weight:700;">🌙 Dark skill</span> &mdash; persuasion, power &amp; cunning</div>
+    </div>
   </aside>
 
   <!-- TRACK COLUMNS -->
@@ -2861,6 +2866,14 @@ function renderPublished(){
   el.innerHTML = PUBLISHED_POSTS.map(p => `<a class="lb-item pub-item" href="${p.u}" target="_blank" rel="noopener" style="text-decoration:none;cursor:pointer;"><span class="lb-dot ${p.s === 'meme' ? 'mindset' : 'validate'}"></span><span class="lb-title" style="flex:1;min-width:0;">${p.t}</span><span class="lb-count" style="opacity:.55;font-size:10px;">read →</span></a>`).join('');
 }
 renderPublished();
+const SKILL = {"connecting-dots-backward": "light", "franklin-s-self-education-protocol": "light", "gatekeeper-removal-framework": "light", "ideas-are-keys-not-products": "light", "radical-simplification": "light", "stop-reading-your-slides": "light", "the-70-30-play-block": "light", "the-ai-replaceability-test": "light", "the-anxiety-loop-drain": "light", "the-barrel-test": "light", "the-co-founder-argument-alternatives": "light", "the-connection-log": "light", "the-credible-neutrality-test": "light", "the-dfv-test": "light", "the-day-job-lab": "light", "the-delta-split": "light", "the-door-sort": "light", "the-evening-review": "light", "the-exit-or-voice-decision": "light", "the-five-minute-door": "light", "the-five-year-filter": "light", "the-founder-governance-stack": "dark", "the-founder-virtue-grid": "light", "the-fox-lion-sequence": "dark", "the-gatekeeper-pivot": "light", "the-headcount-idiot-index": "light", "the-hoffman-loop": "light", "the-inverted-build-sequence": "light", "the-latticework": "light", "the-lindy-filter": "light", "the-lindy-heuristic": "light", "the-meme-seed-excavation": "light", "the-monopoly-finder": "dark", "the-never-help-test": "light", "the-passive-pitch": "light", "the-phase-transition-agreement": "light", "the-problem-solution-cut": "light", "the-s-curve-relocation-drill": "light", "the-sell-first-sequence": "light", "the-socratic-swap": "dark", "the-sprint-forcing-function": "light", "the-stoic-os": "light", "the-ten-year-frame": "light", "the-tourist-test": "light", "the-user-character-arc": "light", "the-why-now-slide": "light", "the-wish-list-strategy": "light", "tiny-giants-will-eat-your-startup": "light", "voluntary-discomfort": "light", "welcome-to-startup-coaching-diaries": "light", "welcome-to-the-meme-playbook": "light", "zero-to-one-thinking": "light", "antifragile-by-design-startups-that-get-stronger-when-things-break": "light", "believability-weighted-decisions-not-all-advisor-opinions-are-equal": "light", "black-swan-proof-your-business-model": "light", "board-seats-arent-optional": "light", "c-strapping-the-fundraising-model-nobody-taught-you": "light", "definite-optimism-why-having-a-plan-is-a-competitive-advantage": "light", "first-principles-engineering-how-to-cut-costs-10x": "light", "fortune-and-virtu-the-founders-luck-equation": "dark", "how-to-get-adm-to-return-your-call": "light", "incentive-engineering-why-your-team-does-what-theyre-paid-to-do": "dark", "invert-your-startup-solve-for-failure-first": "light", "mimetic-desire-why-youre-building-what-everyone-else-is-building": "light", "name-it-like-a-dog": "light", "on-the-shortness-of-startup-life-guard-your-time-like-equity": "light", "pain-plus-reflection-equals-progress-the-founders-post-mortem-protocol": "light", "product-as-argument-stop-explaining-and-start-demonstrating": "light", "skin-in-the-game-the-only-due-diligence-that-matters": "light", "subject-matter-expertise-vs-domain-expertise": "light", "the-3-customer-rule-minimum-viable-validation": "light", "the-barbell-startup-keep-your-day-job-bet-big-on-weekends": "light", "the-cagr-cheat-sheet-what-investors-actually-look-at": "light", "the-canadian-startup-funding-cheat-code": "light", "the-feynman-technique-for-customer-discovery": "light", "the-four-growth-tracks": "light", "the-four-levels-of-co-founder-alignment": "light", "the-liquidation-preference-trap": "light", "the-lollapalooza-effect-when-three-bad-decisions-combine-to-kill-your-company": "light", "the-messy-problem-moat": "light", "the-obstacle-is-the-way-turning-setbacks-into-competitive-advantages": "light", "the-two-track-founder-brain-rational-analysis-plus-psychological-audit": "light", "total-lifetime-value-the-number-that-makes-or-breaks-your-business-model": "light", "vertical-integration-in-2026-when-to-build-vs-buy": "light", "when-to-walk-away-from-your-own-company": "light", "you-are-the-product-what-openai-teaches-founders-about-data": "dark", "your-companys-meme-what-idea-will-outlive-your-startup": "light", "your-feasibility-score-is-lying-to-you": "light", "your-prototype-is-not-a-product": "light", "your-som-is-fake": "light", "the-three-levels-of-entrepreneurship": "light", "control-the-scarce-resource": "dark", "the-chair-is-an-algorithm": "dark", "be-un-automatable": "light", "the-ip-carve-out-clause": "light", "the-watering-hole": "light", "the-prototype-loop": "light", "digital-scales-not-validates": "light", "genes-memes-and-cenes": "light", "master-then-automate": "light", "skin-in-the-game": "light", "the-map-is-not-the-territory": "light"};
+function skillBadge(id){
+  const s = SKILL[id]; if(!s) return '';
+  const dark = s === 'dark';
+  const label = dark ? '\uD83C\uDF19 Dark skill' : '\u2600 Light skill';
+  const color = dark ? '#6D4AA0' : '#B7860B';
+  return `<span class="skill-badge" style="display:inline-block;font-size:9px;font-weight:700;color:${color};border:1px solid ${color};border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:middle;white-space:nowrap;">${label}</span>`;
+}
 let _boardSyncedToLive = false;
 
 function buildCardEl(card) {
@@ -2875,7 +2888,7 @@ function buildCardEl(card) {
     <div class="card-inner">
       <div class="card-top">
         <div class="card-body">
-          <div class="card-title">${escHtml(card.title)}${writtenBadge(card.id)}${newBadge(card.id)}</div>
+          <div class="card-title">${escHtml(card.title)}${writtenBadge(card.id)}${newBadge(card.id)}${skillBadge(card.id)}</div>
           <div class="card-hook">${escHtml(card.hook)}</div>
           <div class="card-chips">
             <div class="chip"><span class="chip-label">Model</span><span class="chip-value" title="${escHtml(card.framework)}">${escHtml(fw)}</span></div>
