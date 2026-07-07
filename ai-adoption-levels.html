@@ -28,31 +28,30 @@ h1 em{font-style:italic;color:var(--gold)}
 .section-label{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--paper-dim);
   margin:46px 0 16px;padding-bottom:8px;border-bottom:1px solid var(--rule);display:flex;align-items:center;gap:10px}
 .section-label b{color:var(--gold);font-weight:600}
-/* ladder */
 .ladder{display:flex;flex-direction:column;gap:9px}
-.lvl{display:grid;grid-template-columns:52px 1fr;gap:16px;align-items:start;padding:16px 18px;border:1px solid var(--rule);
-  border-radius:10px;background:var(--ink-mid);position:relative;transition:.15s}
-.lvl:hover{border-color:var(--rule-strong);background:var(--ink-soft)}
+.lvl{display:grid;grid-template-columns:52px 1fr 76px;gap:16px;align-items:center;padding:16px 18px;border:1px solid var(--rule);
+  border-radius:10px;background:var(--ink-mid);position:relative;transition:.15s;cursor:pointer}
+.lvl:hover{border-color:var(--gold);background:var(--ink-soft);transform:translateY(-1px)}
 .lvl-num{font-family:var(--mono);font-size:24px;font-weight:600;color:var(--ink);background:var(--accent,#E0A93B);
   width:52px;height:52px;border-radius:9px;display:flex;align-items:center;justify-content:center}
 .lvl-name{font-size:18px;font-weight:600}
 .lvl-name .tag{font-family:var(--mono);font-size:10px;color:var(--paper-dim);margin-left:8px;font-weight:400;letter-spacing:.06em}
 .lvl-desc{color:var(--paper-dim);font-size:14.5px;margin-top:4px}
-/* form */
+.lvl-cta{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);text-align:right;opacity:.85}
 .card{background:var(--ink-mid);border:1px solid var(--rule);border-radius:14px;padding:26px 24px;margin-top:8px}
 .field{margin-bottom:22px}
 .field > label{display:block;font-size:16px;font-weight:600;margin-bottom:4px}
 .field .hint{font-size:13px;color:var(--paper-dim);margin-bottom:12px}
 .row-inputs{display:flex;gap:12px;flex-wrap:wrap}
-.row-inputs input{flex:1;min-width:200px}
-input[type=text],textarea{width:100%;background:var(--ink);border:1px solid var(--rule-strong);border-radius:8px;
+.row-inputs input{flex:1;min-width:180px}
+input[type=text],input[type=email],input[type=tel],textarea{width:100%;background:var(--ink);border:1px solid var(--rule-strong);border-radius:8px;
   color:var(--paper);font-family:var(--serif);font-size:15px;padding:11px 13px;resize:vertical}
-input[type=text]:focus,textarea:focus{outline:none;border-color:var(--gold)}
+input:focus,textarea:focus{outline:none;border-color:var(--gold)}
 textarea{min-height:96px;line-height:1.55}
 .pills{display:grid;grid-template-columns:repeat(8,1fr);gap:7px}
 @media(max-width:560px){.pills{grid-template-columns:repeat(4,1fr)}}
 .pill{font-family:var(--mono);font-size:13px;padding:12px 0;border:1px solid var(--rule-strong);border-radius:8px;
-  background:var(--ink);color:var(--paper);cursor:pointer;text-align:center;transition:.12s;position:relative}
+  background:var(--ink);color:var(--paper);cursor:pointer;text-align:center;transition:.12s}
 .pill small{display:block;font-family:var(--serif);font-size:10px;color:var(--paper-dim);margin-top:3px;line-height:1.1}
 .pill:hover{border-color:var(--paper-dim)}
 .pill.cur{background:var(--gold);color:var(--ink);border-color:var(--gold)}
@@ -62,46 +61,80 @@ textarea{min-height:96px;line-height:1.55}
 .legend{font-family:var(--mono);font-size:11px;color:var(--paper-dim);margin-top:10px;display:flex;gap:18px;flex-wrap:wrap}
 .dot{display:inline-block;width:10px;height:10px;border-radius:3px;vertical-align:middle;margin-right:5px}
 .btn{font-family:var(--mono);font-size:14px;font-weight:600;letter-spacing:.03em;background:var(--gold);color:var(--ink);
-  border:none;border-radius:9px;padding:14px 26px;cursor:pointer;transition:.15s}
+  border:none;border-radius:9px;padding:14px 26px;cursor:pointer;transition:.15s;text-decoration:none;display:inline-block}
 .btn:hover{filter:brightness(1.08)}
-.btn:disabled{opacity:.4;cursor:not-allowed}
 .btn-ghost{background:transparent;color:var(--paper);border:1px solid var(--rule-strong)}
-/* result */
 #result{display:none;margin-top:8px}
 .result-head{font-size:13px;font-family:var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
 .gap{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:18px}
-.gap .node{border:1px solid var(--rule-strong);border-radius:10px;padding:12px 16px;min-width:150px}
+.gap .node{border:1px solid var(--rule-strong);border-radius:10px;padding:12px 16px;min-width:140px}
 .gap .node .k{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--paper-dim)}
 .gap .node .v{font-size:19px;font-weight:600;margin-top:3px}
 .gap .arrow{font-size:22px;color:var(--gold)}
-.result-body p{margin-bottom:12px;color:var(--paper)}
-.result-body .why-echo{border-left:3px solid var(--gold);padding:4px 0 4px 14px;color:var(--paper-dim);font-style:italic}
+.result-body p{margin-bottom:12px}
+.why-echo{border-left:3px solid var(--gold);padding:4px 0 4px 14px;color:var(--paper-dim);font-style:italic}
 .next-step{background:var(--ink-soft);border:1px solid var(--rule);border-radius:10px;padding:16px 18px;margin:16px 0}
 .next-step .k{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);margin-bottom:6px}
 .saved{font-family:var(--mono);font-size:12px;color:var(--green);margin-top:16px}
 .err{font-family:var(--mono);font-size:12px;color:var(--pink);margin-top:10px;min-height:1em}
 .foot{margin-top:56px;padding-top:20px;border-top:1px solid var(--rule);font-family:var(--mono);font-size:11px;color:var(--paper-dim);text-align:center}
 .foot a{color:var(--gold);text-decoration:none}
+/* modal (level detail) */
+.backdrop{position:fixed;inset:0;background:rgba(6,5,3,.72);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:20px;z-index:40}
+.backdrop.open{display:flex}
+.modal{background:var(--ink-mid);border:1px solid var(--rule-strong);border-top:3px solid var(--accent,#E0A93B);border-radius:14px;
+  max-width:600px;width:100%;max-height:88vh;overflow-y:auto;padding:28px 26px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.modal-num{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent,#E0A93B)}
+.modal h2{font-size:26px;font-weight:600;margin:4px 0 2px}
+.modal .m-tag{font-family:var(--mono);font-size:11px;color:var(--paper-dim)}
+.modal .m-desc{color:var(--paper);margin:16px 0 20px;font-size:16px}
+.eg-label{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:10px}
+.eg{display:flex;gap:12px;padding:13px 0;border-top:1px solid var(--rule)}
+.eg-i{font-family:var(--mono);font-size:12px;color:var(--accent,#E0A93B);flex:0 0 auto;margin-top:2px}
+.eg-t{font-size:15px;color:var(--paper)}
+.modal-close{float:right;background:none;border:none;color:var(--paper-dim);font-size:22px;cursor:pointer;line-height:1}
+.modal-close:hover{color:var(--paper)}
+/* gate */
+.gate{position:fixed;inset:0;background:var(--ink);display:flex;align-items:center;justify-content:center;padding:22px;z-index:60;
+  background-image:radial-gradient(900px 500px at 50% 0%, rgba(224,169,59,.10), transparent 70%)}
+.gate-card{max-width:460px;width:100%}
+.gate .kicker{margin-bottom:10px}
+.gate h2{font-size:27px;font-weight:600;line-height:1.15;margin-bottom:10px}
+.gate p{color:var(--paper-dim);font-size:15px;margin-bottom:22px}
+.gate .gfield{margin-bottom:14px}
+.gate label{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:6px}
+.gate .btn{width:100%;text-align:center;margin-top:6px}
+.gate .fine{font-size:12px;color:var(--paper-dim);margin-top:14px;text-align:center;font-style:italic}
 </style>
 </head>
 <body>
+
+<!-- CONTACT GATE -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <div class="kicker">HELIX · AI Adoption Assessment</div>
+    <h2>Get your AI adoption level — by email.</h2>
+    <p>Enter your details and I'll email you your personalized result (current level, target, and next step) so you can act on it. Takes two minutes.</p>
+    <div class="gfield"><label>Name</label><input type="text" id="g-name" placeholder="Your name" autocomplete="name"></div>
+    <div class="gfield"><label>Email</label><input type="email" id="g-email" placeholder="you@example.com" autocomplete="email"></div>
+    <div class="gfield"><label>WhatsApp number</label><input type="tel" id="g-wa" placeholder="+1 416 555 0123" autocomplete="tel"></div>
+    <button class="btn" id="g-start">Start the assessment →</button>
+    <div class="err" id="g-err" style="text-align:center"></div>
+    <div class="fine">Your details go to Ed (Huayi) so he can send your results and follow up — nothing else.</div>
+  </div>
+</div>
+
 <div class="wrap">
   <div class="kicker">HELIX · AI Adoption Assessment</div>
   <h1>The Eight Levels of <em>AI Adoption</em></h1>
-  <p class="lede">Where does your venture use AI today — and where does it need to be? Find your current level, set your target, and name why it matters. Higher isn't automatically better: the right level is the one that fits your venture's needs, trust, and risk.</p>
+  <p class="lede">Where does your venture use AI today — and where does it need to be? Tap any level to see three real examples, then set your current level, your target, and why it matters. Higher isn't automatically better: the right level fits your venture's needs, trust, and risk.</p>
   <p class="credit">Framework adapted from <a href="https://every.to/guides/the-eight-levels-of-ai-adoption" target="_blank" rel="noopener">Every's "Eight Levels of AI Adoption"</a>.</p>
 
-  <div class="section-label"><b>The Ladder</b> · from asking to orchestrating</div>
+  <div class="section-label"><b>The Ladder</b> · tap a level for 3 examples</div>
   <div class="ladder" id="ladder"></div>
 
   <div class="section-label"><b>Your Assessment</b> · 2 minutes</div>
   <div class="card">
-    <div class="field">
-      <div class="row-inputs">
-        <input type="text" id="name" placeholder="Your name (optional)">
-        <input type="text" id="venture" placeholder="Your venture (optional)">
-      </div>
-    </div>
     <div class="field">
       <label>Where is your venture <span style="color:var(--gold)">today</span>?</label>
       <div class="hint">Pick the highest level you actually operate at right now — not aspirationally.</div>
@@ -118,7 +151,7 @@ textarea{min-height:96px;line-height:1.55}
       <div class="hint">One or two sentences — the real reason (a bottleneck, a cost, an edge).</div>
       <textarea id="why" placeholder="e.g. I'm the only person doing discovery, ops, and building — I need agents running validation and outreach in parallel so I can focus on customers."></textarea>
     </div>
-    <button class="btn" id="submit">See my gap &amp; save →</button>
+    <button class="btn" id="submit">See my gap &amp; email me →</button>
     <div class="err" id="err"></div>
   </div>
 
@@ -135,12 +168,26 @@ textarea{min-height:96px;line-height:1.55}
     <p class="why-echo" id="r-why"></p>
     <div class="saved" id="r-saved"></div>
     <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
-      <button class="btn btn-ghost" id="copy">Copy my result</button>
-      <a class="btn btn-ghost" id="redo" href="#" onclick="location.reload();return false">Retake</a>
+      <a class="btn" id="emailme" href="#">📧 Email my results to me</a>
+      <button class="btn btn-ghost" id="copy">Copy</button>
+      <button class="btn btn-ghost" onclick="location.reload()">Retake</button>
     </div>
   </div>
 
   <div class="foot">Built for Seneca HELIX founders by Ed (Huayi Gao) · <a href="./index.html">← back to the topic board</a></div>
+</div>
+
+<!-- LEVEL DETAIL MODAL -->
+<div class="backdrop" id="backdrop">
+  <div class="modal" id="modal" style="--accent:#E0A93B">
+    <button class="modal-close" id="m-close">✕</button>
+    <div class="modal-num" id="m-num"></div>
+    <h2 id="m-name"></h2>
+    <div class="m-tag" id="m-tag"></div>
+    <div class="m-desc" id="m-desc"></div>
+    <div class="eg-label">Three examples</div>
+    <div id="m-egs"></div>
+  </div>
 </div>
 
 <script>
@@ -148,30 +195,71 @@ const SB_URL='https://vsdsegpdnlgrfjawqcbe.supabase.co';
 const SB_KEY='sb_publishable_mejS-fdPBBy9gDYHu_4I7w_tB_DzNYr';
 const SB_HEADERS={'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'};
 function sid(){let s=localStorage.getItem('helix_session_id');if(!s){s='s_'+Math.random().toString(36).slice(2)+Date.now().toString(36);try{localStorage.setItem('helix_session_id',s)}catch(e){}}return s;}
+const CONTACT={name:'',email:'',whatsapp:''};
 
 const ACCENTS=['#5B8DB8','#5B8DB8','#3FA37A','#3FA37A','#E0A93B','#E0A93B','#B5485A','#9B7BB0'];
 const LEVELS=[
- {n:1,name:'Chatbot',tag:'ask & paste',desc:'You ask the AI a question and copy the answer back into your work. Every interaction is manual and starts from scratch.'},
- {n:2,name:'Copilot',tag:'in your tools',desc:'AI lives inside your docs, sheets, and code editor, helping in place — but limited to one file at a time.'},
- {n:3,name:'Agent',tag:'step-by-step',desc:'You describe a multi-step task; the agent executes it across files and systems, asking your approval before each step.'},
- {n:4,name:'Autopilot',tag:'run & review',desc:'You skip approvals and let the agent finish on its own, then review. Good for prototypes and lower-stakes work.'},
- {n:5,name:'Workflows',tag:'systems + guardrails',desc:'You engineer a system around the agent — plan-review-implement loops and guardrails — for reliable, repeatable output.'},
- {n:6,name:'Assistant',tag:'acts unprompted',desc:'The agent acts on your behalf without being asked, monitoring a domain and handling recurring work around the clock.'},
- {n:7,name:'Multi-Agent',tag:'parallel roles',desc:'You run several long-lived agents at once, each with a distinct role, executing across different domains in parallel.'},
- {n:8,name:'Orchestrator',tag:'manager of agents',desc:'A manager agent runs a team of sub-agents for you — delegating, monitoring, and consolidating — while you set the goals.'},
+ {n:1,name:'Chatbot',tag:'ask & paste',desc:'You ask the AI a question in a separate window and copy the answer back into your work. Every interaction is manual and starts from scratch.',
+  egs:['Paste your customer-interview notes into ChatGPT and ask for the top 3 pain points.','Ask Claude to draft a cold email, then copy it into Gmail and tweak it.','Describe a pricing dilemma and read the AI’s pros/cons before you decide.']},
+ {n:2,name:'Copilot',tag:'in your tools',desc:'AI lives inside your docs, sheets, and code editor, helping in place — but limited to one file at a time.',
+  egs:['GitHub Copilot autocompletes functions as you type in your editor.','Google Docs “Help me write” expands a bullet list into a paragraph, in place.','Notion AI rewrites a section of your PRD without leaving the doc.']},
+ {n:3,name:'Agent',tag:'step-by-step',desc:'You describe a multi-step task; the agent executes it across files and systems, asking your approval before each step.',
+  egs:['Tell Claude Code “add Stripe checkout” and approve each file change it proposes.','An agent researches 20 competitors and you okay its plan before it writes the report.','Ask an agent to reorganize your Notion workspace, confirming each move.']},
+ {n:4,name:'Autopilot',tag:'run & review',desc:'You skip the approvals and let the agent finish on its own, then review. Good for prototypes and lower-stakes work.',
+  egs:['Let Claude Code build a landing-page prototype end-to-end, then review the result.','An agent drafts and schedules a week of social posts; you skim before they go out.','Point an agent at a messy spreadsheet and let it clean the whole thing unattended.']},
+ {n:5,name:'Workflows',tag:'systems + guardrails',desc:'You engineer a system around the agent — plan-review-implement loops and guardrails — for reliable, repeatable output.',
+  egs:['Every feature ships through the same plan→review→implement pipeline with AI checks.','Discovery interviews auto-run: transcription → theme extraction → a validated summary.','Your content pipeline drafts, fact-checks, and formats posts, gated by one review step.']},
+ {n:6,name:'Assistant',tag:'acts unprompted',desc:'The agent acts on your behalf without being asked, monitoring a domain and handling recurring work around the clock.',
+  egs:['An assistant watches your inbox and drafts replies to every new lead overnight.','A bot monitors competitors daily and pings you only when something material changes.','Your assistant reconciles new invoices and flags anomalies without being asked.']},
+ {n:7,name:'Multi-Agent',tag:'parallel roles',desc:'You run several long-lived agents at once, each with a distinct role, executing across different domains in parallel.',
+  egs:['A research agent, a writing agent, and a design agent build a full pitch deck in parallel.','Separate always-on agents run support, outreach, and bookkeeping simultaneously.','Three agents each own a market segment, continuously updating your CRM.']},
+ {n:8,name:'Orchestrator',tag:'manager of agents',desc:'A manager agent runs a team of sub-agents for you — delegating, monitoring, and consolidating — while you set the goals.',
+  egs:['A manager agent breaks your goal into tasks, assigns sub-agents, and hands you the result.','You set “grow signups 20%” and an orchestrator runs experiments across sub-agents.','An orchestrator coordinates a full launch — content, ads, outreach — from one brief.']},
 ];
 let cur=null,tgt=null;
 
+/* ---- gate ---- */
+(function(){
+  try{const c=JSON.parse(localStorage.getItem('helix_contact')||'null');if(c&&c.email){Object.assign(CONTACT,c);document.getElementById('gate').style.display='none';}}catch(e){}
+})();
+document.getElementById('g-start').onclick=()=>{
+  const err=document.getElementById('g-err');err.textContent='';
+  const name=document.getElementById('g-name').value.trim();
+  const email=document.getElementById('g-email').value.trim();
+  const wa=document.getElementById('g-wa').value.trim();
+  if(name.length<2){err.textContent='Please enter your name.';return;}
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){err.textContent='Please enter a valid email.';return;}
+  if(wa.replace(/[^0-9]/g,'').length<7){err.textContent='Please enter a valid WhatsApp number.';return;}
+  Object.assign(CONTACT,{name,email,whatsapp:wa});
+  try{localStorage.setItem('helix_contact',JSON.stringify(CONTACT));}catch(e){}
+  document.getElementById('gate').style.display='none';
+};
+
+/* ---- ladder + level modal ---- */
 const ladder=document.getElementById('ladder');
 LEVELS.forEach(l=>{
   const d=document.createElement('div');d.className='lvl';d.style.setProperty('--accent',ACCENTS[l.n-1]);
-  d.innerHTML=`<div class="lvl-num">${l.n}</div><div><div class="lvl-name">${l.name}<span class="tag">${l.tag}</span></div><div class="lvl-desc">${l.desc}</div></div>`;
+  d.innerHTML=`<div class="lvl-num">${l.n}</div><div><div class="lvl-name">${l.name}<span class="tag">${l.tag}</span></div><div class="lvl-desc">${l.desc}</div></div><div class="lvl-cta">3 examples ›</div>`;
+  d.onclick=()=>openLevel(l);
   ladder.appendChild(d);
 });
+const backdrop=document.getElementById('backdrop');
+function openLevel(l){
+  document.getElementById('modal').style.setProperty('--accent',ACCENTS[l.n-1]);
+  document.getElementById('m-num').textContent='Level '+l.n;
+  document.getElementById('m-name').textContent=l.name;
+  document.getElementById('m-tag').textContent=l.tag;
+  document.getElementById('m-desc').textContent=l.desc;
+  document.getElementById('m-egs').innerHTML=l.egs.map((e,i)=>`<div class="eg"><div class="eg-i">${i+1}</div><div class="eg-t">${e}</div></div>`).join('');
+  backdrop.classList.add('open');
+}
+document.getElementById('m-close').onclick=()=>backdrop.classList.remove('open');
+backdrop.onclick=e=>{if(e.target===backdrop)backdrop.classList.remove('open');};
+
+/* ---- pills ---- */
 function buildPills(host,which){
   LEVELS.forEach(l=>{
-    const b=document.createElement('button');b.className='pill';b.type='button';
-    b.innerHTML=`${l.n}<small>${l.name}</small>`;
+    const b=document.createElement('button');b.className='pill';b.type='button';b.innerHTML=`${l.n}<small>${l.name}</small>`;
     b.onclick=()=>{
       if(which==='cur'){cur=l.n;[...host.children].forEach((c,i)=>c.classList.toggle('cur',i===l.n-1));}
       else{tgt=l.n;[...host.children].forEach((c,i)=>c.classList.toggle('tgt',i===l.n-1));}
@@ -182,45 +270,44 @@ function buildPills(host,which){
 buildPills(document.getElementById('cur-pills'),'cur');
 buildPills(document.getElementById('tgt-pills'),'tgt');
 
+/* ---- submit ---- */
 document.getElementById('submit').onclick=async()=>{
   const err=document.getElementById('err');err.textContent='';
   const why=document.getElementById('why').value.trim();
   if(!cur){err.textContent='Pick where you are today.';return;}
   if(!tgt){err.textContent='Pick your target level.';return;}
   if(why.length<8){err.textContent='Add a sentence on why your venture needs it.';return;}
-  const name=document.getElementById('name').value.trim();
-  const venture=document.getElementById('venture').value.trim();
   const C=LEVELS[cur-1],T=LEVELS[tgt-1],gap=tgt-cur;
   document.getElementById('r-cur').textContent='L'+C.n+' · '+C.name;
   document.getElementById('r-tgt').textContent='L'+T.n+' · '+T.name;
   document.getElementById('r-gap').textContent=gap>0?('+'+gap+' level'+(gap>1?'s':'')):(gap<0?gap+' levels':'same');
-  let body='';
-  if(gap>0){
-    const nxt=LEVELS[cur]; // next level up
+  let body='',nextTxt='';
+  if(gap>0){const nxt=LEVELS[cur];
     body=`<p>You operate at <b>Level ${C.n} — ${C.name}</b> and your venture needs <b>Level ${T.n} — ${T.name}</b>. That's a ${gap}-level climb, and it compounds: each rung buys back more of your time.</p>`;
+    nextTxt=`Your very next step → Level ${nxt.n}: ${nxt.name}. ${nxt.desc}`;
     document.getElementById('r-next').innerHTML=`<div class="k">Your very next step → Level ${nxt.n}: ${nxt.name}</div>${nxt.desc}`;
     document.getElementById('r-next').style.display='block';
   }else if(gap===0){
-    body=`<p>You're already at <b>Level ${C.n} — ${C.name}</b>, exactly where you say your venture needs to be. The work now isn't climbing levels — it's getting <i>deeper and more reliable</i> at this one. Sharpen the system before you reach higher.</p>`;
+    body=`<p>You're already at <b>Level ${C.n} — ${C.name}</b>, exactly where your venture needs to be. The work now isn't climbing levels — it's getting <i>deeper and more reliable</i> at this one.</p>`;
     document.getElementById('r-next').style.display='none';
   }else{
-    body=`<p>Interesting — you operate <i>above</i> the level your venture actually needs (L${C.n} vs L${T.n}). That's worth respecting: higher isn't automatically better. Make sure the extra complexity is earning its keep, or simplify back to L${T.n} and move faster.</p>`;
+    body=`<p>You operate <i>above</i> the level your venture needs (L${C.n} vs L${T.n}). Higher isn't automatically better — make sure the extra complexity earns its keep, or simplify back to L${T.n} and move faster.</p>`;
     document.getElementById('r-next').style.display='none';
   }
   document.getElementById('r-body').innerHTML=body;
   document.getElementById('r-why').textContent='“'+why+'”';
   document.getElementById('result').style.display='block';
   document.getElementById('result').scrollIntoView({behavior:'smooth'});
-  window._summary=`AI Adoption Assessment\nToday: L${C.n} ${C.name}\nTarget: L${T.n} ${T.name} (${gap>0?'+'+gap:gap} levels)\nWhy: ${why}`;
-  // save
+  const summary=`Your AI Adoption Assessment\n\nToday: Level ${C.n} — ${C.name}\nTarget: Level ${T.n} — ${T.name} (${gap>0?'+'+gap:gap} level climb)\nWhy: ${why}\n\n${nextTxt}\n\n— via Ed (Huayi Gao), Seneca HELIX`;
+  document.getElementById('emailme').href='mailto:'+encodeURIComponent(CONTACT.email)+'?subject='+encodeURIComponent('Your AI Adoption level: L'+C.n+' → L'+T.n)+'&body='+encodeURIComponent(summary);
+  document.getElementById('copy').onclick=()=>{navigator.clipboard.writeText(summary).then(()=>{document.getElementById('copy').textContent='Copied ✓';});};
   const saved=document.getElementById('r-saved');
   try{
     const r=await fetch(SB_URL+'/rest/v1/ai_adoption_assessments',{method:'POST',headers:SB_HEADERS,
-      body:JSON.stringify({session_id:sid(),name:name||null,venture:venture||null,current_level:cur,target_level:tgt,why:why})});
-    saved.textContent=r.ok?'✓ Saved — Ed will see your assessment.':'(Saved locally; could not reach the server.)';
+      body:JSON.stringify({session_id:sid(),name:CONTACT.name||null,email:CONTACT.email||null,whatsapp:CONTACT.whatsapp||null,current_level:cur,target_level:tgt,why:why})});
+    saved.textContent=r.ok?'✓ Saved — Ed will email your results and follow up.':'(Saved locally; could not reach the server.)';
   }catch(e){saved.textContent='(Saved locally; could not reach the server.)';}
 };
-document.getElementById('copy').onclick=()=>{navigator.clipboard.writeText(window._summary||'').then(()=>{document.getElementById('copy').textContent='Copied ✓';});};
 </script>
 </body>
 </html>
