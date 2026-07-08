@@ -168,7 +168,7 @@ textarea{min-height:96px;line-height:1.55}
     <p class="why-echo" id="r-why"></p>
     <div class="saved" id="r-saved"></div>
     <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
-      <a class="btn" id="emailme" href="#">📧 Email my results to me</a>
+      <button class="btn" id="emailme" type="button">📧 Email my results to me</button>
       <button class="btn btn-ghost" id="copy">Copy</button>
       <button class="btn btn-ghost" onclick="location.reload()">Retake</button>
     </div>
@@ -216,7 +216,7 @@ const LEVELS=[
  {n:8,name:'Orchestrator',tag:'manager of agents',desc:'A manager agent runs a team of sub-agents for you — delegating, monitoring, and consolidating — while you set the goals.',
   egs:['A manager agent breaks your goal into tasks, assigns sub-agents, and hands you the result.','You set “grow signups 20%” and an orchestrator runs experiments across sub-agents.','An orchestrator coordinates a full launch — content, ads, outreach — from one brief.']},
 ];
-let cur=null,tgt=null;
+let cur=null,tgt=null,emailPayload=null;
 
 /* ---- gate ---- */
 (function(){
@@ -299,7 +299,8 @@ document.getElementById('submit').onclick=async()=>{
   document.getElementById('result').style.display='block';
   document.getElementById('result').scrollIntoView({behavior:'smooth'});
   const summary=`Your AI Adoption Assessment\n\nToday: Level ${C.n} — ${C.name}\nTarget: Level ${T.n} — ${T.name} (${gap>0?'+'+gap:gap} level climb)\nWhy: ${why}\n\n${nextTxt}\n\n— via Ed (Huayi Gao), Seneca HELIX`;
-  document.getElementById('emailme').href='mailto:'+encodeURIComponent(CONTACT.email)+'?subject='+encodeURIComponent('Your AI Adoption level: L'+C.n+' → L'+T.n)+'&body='+encodeURIComponent(summary);
+  emailPayload={email:CONTACT.email,name:CONTACT.name,current_level:cur,current_name:C.name,target_level:tgt,target_name:T.name,gap,why,next_step:nextTxt||null};
+  document.getElementById('emailme').disabled=false;document.getElementById('emailme').textContent='📧 Email my results to me';
   document.getElementById('copy').onclick=()=>{navigator.clipboard.writeText(summary).then(()=>{document.getElementById('copy').textContent='Copied ✓';});};
   const saved=document.getElementById('r-saved');
   try{
@@ -307,6 +308,20 @@ document.getElementById('submit').onclick=async()=>{
       body:JSON.stringify({session_id:sid(),name:CONTACT.name||null,email:CONTACT.email||null,whatsapp:CONTACT.whatsapp||null,current_level:cur,target_level:tgt,why:why})});
     saved.textContent=r.ok?'✓ Saved — Ed will email your results and follow up.':'(Saved locally; could not reach the server.)';
   }catch(e){saved.textContent='(Saved locally; could not reach the server.)';}
+};
+document.getElementById('emailme').onclick=async function(){
+  if(!emailPayload){return;}
+  const btn=this;
+  btn.disabled=true;btn.textContent='Sending…';
+  try{
+    const r=await fetch('https://vsdsegpdnlgrfjawqcbe.supabase.co/functions/v1/adoption-send-email',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(emailPayload)
+    });
+    if(r.ok){btn.textContent='✓ Sent to '+emailPayload.email;}
+    else{btn.textContent='📧 Email my results to me';btn.disabled=false;document.getElementById('r-saved').textContent='Could not send — try again.';}
+  }catch(e){btn.textContent='📧 Email my results to me';btn.disabled=false;}
 };
 </script>
 </body>
